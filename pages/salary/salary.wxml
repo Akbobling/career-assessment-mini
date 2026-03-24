@@ -1,0 +1,6 @@
+<view class="salary-container">
+  <text>薪资爆料页面</text>
+</view>
+<view class="fab-btn" bindtap="goToPublish">
+  <t-icon name="edit-2" size="48rpx" color="#fff" />
+</view>

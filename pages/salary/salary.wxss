@@ -1,0 +1,22 @@
+.salary-container {
+  padding: 20rpx;
+}
+
+.fab-btn {
+  position: fixed;
+  right: 40rpx;
+  bottom: 200rpx;
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 50%;
+  background-color: #0052D9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 82, 217, 0.4);
+  z-index: 999;
+}
+
+.fab-btn:active {
+  opacity: 0.8;
+}

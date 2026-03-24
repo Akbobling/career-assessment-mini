@@ -1,8 +1,3 @@
 <view class="container">
-  <button type="primary" bindtap="goToPage">个人资料修改</button>
+  <text>职业测评页面</text>
 </view>
-<t-tab-bar value="{{activeTab}}" bind:change="onTabChange">
-  <t-tab-bar-item value="assessment">职业测评</t-tab-bar-item>
-  <t-tab-bar-item value="salary">薪资爆料</t-tab-bar-item>
-  <t-tab-bar-item value="user">用户中心</t-tab-bar-item>
-</t-tab-bar>

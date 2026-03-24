@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "tdesign-miniprogram": "^1.12.3"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

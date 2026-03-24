@@ -6,6 +6,13 @@ App({
     logs.unshift(Date.now())
     wx.setStorageSync('logs', logs)
 
+    // 自动载入用户信息
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    this.globalData.userInfo = userInfo;
+    
+    wx.cloud.init({
+      env: 'cloud1-2gly2wfnd42ab7f8'
+    }),
     // 登录
     wx.login({
       success: res => {

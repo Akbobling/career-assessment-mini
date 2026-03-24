@@ -1,13 +1,40 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/salary/salary",
+    "pages/mine/mine",
+    "pages/profile/profile",
     "pages/logs/logs",
-    "pages/profile/profile"
+    "pages/edit-profile/edit-profile",
+    "pages/publish/publish"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "职业测评",
     "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "custom": true,
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "测评",
+        "iconPath": "images/anchor.png",
+        "selectedIconPath": "images/anchor_activated.png"
+      },
+      {
+        "pagePath": "pages/salary/salary",
+        "text": "薪资",
+        "iconPath": "images/money.png",
+        "selectedIconPath": "images/money_activated.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/user.png",
+        "selectedIconPath": "images/user_activated.png"
+      }
+    ]
   },
   "style": "v2",
   "componentFramework": "glass-easel",

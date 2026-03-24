@@ -1,0 +1,76 @@
+<view class="edit-container">
+  <view wx:if="{{type === 'avatar'}}" class="edit-avatar">
+    <t-avatar 
+      size="200rpx" 
+      image="{{avatarUrl || ''}}" 
+      shape="circle"
+    />
+    <t-button 
+      theme="primary" 
+      size="large" 
+      class="wechat-avatar-btn" 
+      open-type="chooseAvatar" bind:chooseavatar="onChooseWechatAvatar"
+    >
+      更换头像
+    </t-button>
+  </view>
+  
+  <view wx:if="{{type === 'name'}}" class="edit-item">
+    <t-input placeholder="请输入名字" value="{{name}}" bind:change="onNameInput" />
+  </view>
+  
+  <view wx:if="{{type === 'gender'}}" class="edit-item">
+    <t-cell class="mb-16" title="选择性别" arrow hover note="{{genderText || '请选择'}}" bind:click="onGenderClick" />
+    <t-picker 
+      visible="{{genderVisible}}" 
+      value="{{genderValue}}" 
+      title="选择性别"
+      cancelBtn="取消"
+      confirmBtn="确认"
+      bindchange="onGenderChange"
+      bindcancel="onGenderCancel"
+    >
+      <t-picker-item options="{{genderOptionsList}}"></t-picker-item>
+    </t-picker>
+  </view>
+  
+  <view wx:if="{{type === 'school'}}" class="edit-school">
+    <t-search 
+      placeholder="搜索高校名称" 
+      value="{{searchKeyword}}"
+      bind:change="onSchoolSearch"
+      bind:submit="onSchoolSearch"
+      bind:clear="onSearchClear"
+    />
+    
+    <view wx:if="{{searching}}" class="search-loading">
+      <t-loading theme="circular" size="40rpx" />
+      <text>搜索中...</text>
+    </view>
+    
+    <view wx:elif="{{universityList.length > 0}}" class="university-list">
+      <t-cell 
+        wx:for="{{universityList}}" 
+        wx:key="name"
+        title="{{item.name}}" 
+        note="{{item.location}} {{item.is985 ? '985' : ''}} {{item.is211 ? '211' : ''}}"
+        hover
+        bindtap="selectUniversity"
+        data-school="{{item.name}}"
+      />
+    </view>
+    
+    <view wx:elif="{{searchKeyword && !searching && universityList.length === 0}}" class="search-empty">
+      未找到相关高校
+    </view>
+  </view>
+  
+  <view wx:if="{{type === 'signature'}}" class="edit-item">
+    <t-textarea 
+      placeholder="请输入签名" 
+      value="{{signature}}" 
+      bind:change="onSignatureInput"
+      autosize
+    />
+  </view>
+</view>

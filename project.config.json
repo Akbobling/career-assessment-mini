@@ -1,4 +1,5 @@
 {
+  "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
   "libVersion": "trial",
   "packOptions": {
@@ -37,5 +38,7 @@
     "tabSize": 2
   },
   "appid": "wxa8672e8e3dcf0873",
-  "simulatorPluginLibVersion": {}
+  "simulatorPluginLibVersion": {},
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
+
 }

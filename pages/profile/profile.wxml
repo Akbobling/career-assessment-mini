@@ -1,10 +1,12 @@
 <view class="profile-container">
   <t-cell-group>
-    <t-cell title="头像" note="{{userInfo.avatar || '未设置'}}" hover />
-    <t-cell title="名字" note="{{userInfo.name || '未设置'}}" hover />
-    <t-cell title="性别" note="{{userInfo.gender || '未设置'}}" hover />
-    <t-cell title="学校" note="{{userInfo.school || '未设置'}}" hover />
-    <t-cell title="手机号" note="{{userInfo.phone || '未设置'}}" hover />
-    <t-cell title="签名" note="{{userInfo.signature || '未设置'}}" hover />
+    <t-cell title="头像" hover bindtap="editAvatar">
+      <t-avatar slot="note" size="80rpx" image="{{userInfo.avatar}}" />
+    </t-cell>
+    <t-cell title="名字" note="{{userInfo.name || '未设置'}}" hover bindtap="editName" />
+    <t-cell title="性别" note="{{userInfo.gender || '未设置'}}" hover bindtap="editGender" />
+    <t-cell title="学校" note="{{userInfo.school || '未设置'}}" hover bindtap="editSchool" />
+    <t-cell title="签名" note="{{userInfo.signature || '未设置'}}" hover bindtap="editSignature" />
   </t-cell-group>
+  <t-toast id="t-toast" />
 </view>

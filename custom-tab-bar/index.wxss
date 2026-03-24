@@ -1,0 +1,31 @@
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  background: white;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1rpx solid #e5e5e5;
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 0;
+}
+
+.tab-icon {
+  width: 56rpx;
+  height: 56rpx;
+  margin-bottom: 6rpx;
+}
+
+.tab-text {
+  font-size: 26rpx;
+  font-family: PingFang SC, Microsoft YaHei, sans-serif;
+}
