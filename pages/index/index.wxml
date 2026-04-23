@@ -1,3 +1,80 @@
 <view class="container">
-  <text>职业测评页面</text>
+  <view class="title">职业测评</view>
+  <view class="entry-card {{majorResult ? 'entry-card-done' : ''}}" bindtap="{{majorResult ? '' : 'goToQuiz'}}">
+    <view class="entry-info">
+      <view class="entry-name">大类职业适配度问卷</view>
+      <view class="entry-desc">初步确定职业方向</view>
+    </view>
+    <view class="entry-done" wx:if="{{majorResult}}">
+      <t-icon name="check-circle-filled" size="20px" color="#22C55E" />
+      <text class="entry-done-text">已完成</text>
+    </view>
+  </view>
+
+  <!-- 大类结果区 -->
+  <view class="result-section" wx:if="{{majorResult}}">
+    <view class="result-tip">测评结果：{{majorResult.topCategory}}</view>
+    <view class="result-actions">
+      <view class="result-btn" bindtap="viewMajorReport">
+        <t-icon name="file-copy" size="18px" color="#1E3A8A" />
+        <text class="result-btn-text">报告查看</text>
+      </view>
+      <view class="result-btn result-btn-primary" bindtap="retakeMajorQuiz">
+        <t-icon name="refresh" size="18px" color="#ffffff" />
+        <text class="result-btn-text result-btn-text-light">重新测评</text>
+      </view>
+    </view>
+  </view>
+  <view class="result-section result-empty" wx:else>
+    <view class="result-tip-empty">{{majorEmptyTip}}</view>
+  </view>
+
+  <!-- 中类问卷入口 -->
+  <view class="entry-card {{mediumResult ? 'entry-card-done' : ''}}" bindtap="{{mediumResult ? '' : 'goToMediumQuiz'}}">
+    <view class="entry-info">
+      <view class="entry-name">中类职业适配度问卷</view>
+      <view class="entry-desc">细化职业类别</view>
+    </view>
+    <view class="entry-done" wx:if="{{mediumResult}}">
+      <t-icon name="check-circle-filled" size="20px" color="#22C55E" />
+      <text class="entry-done-text">已完成</text>
+    </view>
+  </view>
+
+  <!-- 中类结果区：三种状态 -->
+  <view class="result-section result-empty" wx:if="{{majorResult && !mediumResult}}">
+    <view class="result-tip-empty">{{mediumEmptyTip || '大类测评已完成，点击上方继续中类测评吧'}}</view>
+  </view>
+  <view class="result-section" wx:if="{{mediumResult}}">
+    <view class="result-tip">测评结果：{{mediumResult.topCategory}}</view>
+    <view class="result-actions">
+      <view class="result-btn" bindtap="viewMediumReport">
+        <t-icon name="file-copy" size="18px" color="#1E3A8A" />
+        <text class="result-btn-text">报告查看</text>
+      </view>
+      <view class="result-btn result-btn-primary" bindtap="retakeMediumQuiz">
+        <t-icon name="refresh" size="18px" color="#ffffff" />
+        <text class="result-btn-text result-btn-text-light">重新测评</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="entry-card">
+    <view class="entry-info">
+      <view class="entry-name">查看小类职业</view>
+      <view class="entry-desc">浏览岗位描述</view>
+    </view>
+  </view>
 </view>
+
+<t-dialog
+  visible="{{dialogVisible}}"
+  title="提示"
+  content="{{dialogType === 'major' ? '中类测评问卷状态将被重置为未测评，是否继续？' : dialogType === 'medium' ? '中类测评结果将被重置，是否继续？' : '检测到上次未完成的作答，是否继续？'}}"
+  confirm-btn="{{dialogType === 'loadMajor' || dialogType === 'loadMedium' ? '继续' : '确认'}}"
+  cancel-btn="{{dialogType === 'loadMajor' || dialogType === 'loadMedium' ? '重新开始' : '取消'}}"
+  bindconfirm="onRetakeConfirm"
+  bindcancel="{{dialogType === 'loadMajor' || dialogType === 'loadMedium' ? 'onLoadCacheCancel' : 'onRetakeCancel'}}"
+/>
+
+<t-toast id="t-toast" />

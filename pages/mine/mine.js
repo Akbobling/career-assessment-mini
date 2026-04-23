@@ -29,5 +29,10 @@ Page({
     wx.navigateTo({
       url: '/pages/profile/profile'
     });
+  },
+  goToReports() {
+    wx.navigateTo({
+      url: '/pages/reports/reports'
+    });
   }
 })

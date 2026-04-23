@@ -5,8 +5,19 @@
     </t-cell>
     <t-cell title="名字" note="{{userInfo.name || '未设置'}}" hover bindtap="editName" />
     <t-cell title="性别" note="{{userInfo.gender || '未设置'}}" hover bindtap="editGender" />
+    <t-cell title="最高学历" note="{{userInfo.education || '未设置'}}" hover bindtap="editEducation" />
     <t-cell title="学校" note="{{userInfo.school || '未设置'}}" hover bindtap="editSchool" />
-    <t-cell title="签名" note="{{userInfo.signature || '未设置'}}" hover bindtap="editSignature" />
   </t-cell-group>
+  <t-picker
+    visible="{{educationVisible}}"
+    value="{{educationValue}}"
+    title="选择最高学历"
+    cancelBtn="取消"
+    confirmBtn="确认"
+    bindchange="onEducationChange"
+    bindcancel="onEducationCancel"
+  >
+    <t-picker-item options="{{educationOptions}}"></t-picker-item>
+  </t-picker>
   <t-toast id="t-toast" />
 </view>

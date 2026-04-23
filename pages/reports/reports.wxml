@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="empty-wrap" wx:if="{{reports.length === 0}}">
+    <t-empty icon="file-search" description="暂无测评报告" />
+  </view>
+
+  <view class="report-list" wx:else>
+    <t-collapse value="{{expandedValues}}" bindchange="handleCollapseChange" expandMutex>
+      <t-collapse-panel
+        wx:for="{{reports}}"
+        wx:key="_id"
+        header="{{item.quizName}}"
+        value="{{item._id}}"
+      >
+        <view slot="header-right" class="header-right">
+          <text class="report-time">{{item.timeStr}}</text>
+        </view>
+        <view class="report-body" bindtap="goToDetail" data-id="{{item._id}}">
+          <view class="report-result">
+            <t-icon name="chart-bar" size="20px" color="#3B82F6" />
+            <text class="result-text">{{item.topCategory}}</text>
+          </view>
+          <view class="report-action">
+            <text class="action-link">查看详情</text>
+            <t-icon name="chevron-right" size="16px" color="#3B82F6" />
+          </view>
+        </view>
+      </t-collapse-panel>
+    </t-collapse>
+  </view>
+</view>

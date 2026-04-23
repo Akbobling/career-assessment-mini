@@ -1,12 +1,18 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/quiz/quiz",
+    "pages/result/result",
+    "pages/reports/reports",
     "pages/salary/salary",
     "pages/mine/mine",
     "pages/profile/profile",
     "pages/logs/logs",
     "pages/edit-profile/edit-profile",
-    "pages/publish/publish"
+    "pages/publish/publish",
+    "pages/search-school/search-school",
+    "pages/search-major/search-major",
+    "pages/search-region/search-region"
   ],
   "window": {
     "navigationBarTextStyle": "black",

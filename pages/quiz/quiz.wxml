@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="progress-wrap">
+    <view class="progress-header">第{{currentIndex + 1}}题 / 共{{total}}题</view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{total ? ((currentIndex + 1) / total * 100) : 0}}%;"></view>
+    </view>
+    <view class="progress-tip">进度条</view>
+  </view>
+
+  <view class="question-wrap {{animClass}}" wx:if="{{currentQuestion}}">
+    <view class="question-category">{{currentQuestion.category}}</view>
+    <view class="question-title">{{currentQuestion.content}}</view>
+
+    <view class="options">
+      <view
+        class="option-item {{selectedValue === item.value ? 'active' : ''}}"
+        wx:for="{{options}}"
+        wx:key="value"
+        bindtap="handleOptionTap"
+        data-value="{{item.value}}"
+      >
+        <text class="option-key">{{item.value}}</text>
+        <text class="option-text">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- DEBUG-START: 后门按钮，上线前移除 -->
+  <view class="debug-btn" bindtap="handleDebugFill">DEBUG</view>
+  <!-- DEBUG-END -->
+
+  <view class="footer">
+    <button class="action-btn" bindtap="goPrev" disabled="{{currentIndex === 0}}">上一题</button>
+    <button
+      class="action-btn"
+      wx:if="{{currentIndex < total - 1}}"
+      bindtap="goNext"
+    >下一题</button>
+    <button
+      class="action-btn submit-btn"
+      wx:else
+      bindtap="handleSubmit"
+    >提交</button>
+  </view>
+</view>

@@ -12,7 +12,6 @@ Page({
       { label: '女', value: '女' },
       { label: '保密', value: '保密' }
     ],
-    signature: '',
     searchKeyword: '',
     universityList: [],
     searching: false
@@ -24,7 +23,7 @@ Page({
     const userInfo = wx.getStorageSync('userInfo') || {};
     const genderValue = userInfo.gender ? [userInfo.gender] : [];
     const genderText = userInfo.gender || '';
-    
+
     this.setData({
       type: type,
       avatarUrl: userInfo.avatarUrl || '',
@@ -32,7 +31,6 @@ Page({
       gender: userInfo.gender || '',
       genderValue: genderValue,
       genderText: genderText,
-      signature: userInfo.signature || '',
       school: userInfo.school || ''
     });
   },
@@ -92,15 +90,7 @@ Page({
       genderVisible: false
     });
   },
-  
-  onSignatureInput(e) {
-    const value = e.detail.value;
-    this.setData({
-      signature: value
-    });
-    this.autoSave('signature', value);
-  },
-  
+
   onSchoolSearch(e) {
     let keyword = '';
     if (typeof e.detail === 'string') {
@@ -183,21 +173,39 @@ Page({
     }, 1000);
   },
   
-  autoSave(field, value) {
+  async autoSave(field, value) {
     const userInfo = wx.getStorageSync('userInfo') || {};
-    
+
     if (field === 'avatar') {
       userInfo.avatarUrl = value;
     } else if (field === 'name') {
       userInfo.nickName = value;
     } else if (field === 'gender') {
       userInfo.gender = value;
-    } else if (field === 'signature') {
-      userInfo.signature = value;
     } else if (field === 'school') {
       userInfo.school = value;
     }
-    
+
     wx.setStorageSync('userInfo', userInfo);
+
+    // Sync to cloud database
+    try {
+      const db = wx.cloud.database();
+      const res = await db.collection('USER_PROFILES').limit(1).get();
+      if (res.data.length > 0) {
+        // Remove system fields before update
+        const { _id, _openid, ...updateData } = userInfo;
+        await db.collection('USER_PROFILES').doc(res.data[0]._id).update({
+          data: updateData
+        });
+      } else {
+        const { _id, _openid, ...addData } = userInfo;
+        await db.collection('USER_PROFILES').add({
+          data: addData
+        });
+      }
+    } catch (err) {
+      console.error('同步用户信息到云端失败:', err);
+    }
   }
 })

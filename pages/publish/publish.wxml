@@ -1,3 +1,105 @@
-<view class="publish-container">
-  <text>发布页面</text>
+<view class="page-container">
+
+  <!-- 标题区域 -->
+  <view class="title-section">
+    <text class="main-title">薪资爆料</text>
+    <text class="sub-title">晒职场真实薪资\n帮学弟学妹谈薪避坑~</text>
+  </view>
+
+  <!-- 白色卡片容器 -->
+  <view class="card-container">
+    <!-- 表单区域 -->
+    <view class="form-section">
+      <!-- 类型字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>类型</text>
+        <view class="type-buttons">
+          <view class="type-btn {{formData.type === '校招' ? 'active' : ''}}" bindtap="selectType" data-type="校招">
+            <text>{{formData.type === '校招' ? '校招' : '校招'}}</text>
+          </view>
+          <view class="type-btn {{formData.type === '社招' ? 'active' : ''}}" bindtap="selectType" data-type="社招">
+            <text>{{formData.type === '社招' ? '社招' : '社招'}}</text>
+          </view>
+          <view class="type-btn {{formData.type === '实习' ? 'active' : ''}}" bindtap="selectType" data-type="实习">
+            <text>{{formData.type === '实习' ? '实习' : '实习'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 行业字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>行业</text>
+        <view class="select-box" bindtap="showIndustryPicker">
+          <text class="select-text">{{formData.industry || '请选择行业'}}</text>
+          <t-icon name="chevron-down" size="20px" color="#3B82F6" />
+        </view>
+      </view>
+
+      <!-- 公司字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>公司</text>
+        <view class="input-container">
+          <input class="form-input input-tall" placeholder="可填写模糊名称，如互联网大厂、某快递公司等" placeholder-class="placeholder-text" value="{{formData.company}}" bindinput="inputCompany" maxlength="30" />
+          <text class="char-count {{charLimitReached.company ? 'limit-reached' : ''}}">{{formData.company.length || 0}}/30</text>
+        </view>
+      </view>
+
+      <!-- 岗位字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>岗位</text>
+        <view class="input-container">
+          <input class="form-input input-tall" placeholder="请填写岗位" placeholder-class="placeholder-text" value="{{formData.position}}" bindinput="inputPosition" maxlength="30" />
+          <text class="char-count {{charLimitReached.position ? 'limit-reached' : ''}}">{{formData.position.length || 0}}/30</text>
+        </view>
+      </view>
+
+      <!-- 地区字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>地区</text>
+        <view class="select-box" bindtap="showRegionPicker">
+          <text class="select-text">{{formData.region || '请选择地区'}}</text>
+          <t-icon name="chevron-down" size="20px" color="#3B82F6" />
+        </view>
+      </view>
+
+      <!-- 薪资描述字段 -->
+      <view class="form-item">
+        <text class="form-label normal">薪资描述</text>
+        <view class="input-container">
+          <input class="form-input input-tall" placeholder="请注明税前/税后，如税前 25W/年或税后 16*13" placeholder-class="placeholder-text" value="{{formData.salary}}" bindinput="inputSalary" maxlength="50" />
+          <text class="char-count {{charLimitReached.salary ? 'limit-reached' : ''}}">{{formData.salary.length || 0}}/50</text>
+        </view>
+      </view>
+
+      <!-- 想对学弟学妹说的话字段 -->
+      <view class="form-item">
+        <text class="form-label normal"><text class="required-star">*</text>想对学弟学妹说的话</text>
+        <view class="textarea-container">
+          <textarea class="form-textarea" placeholder="请输入想对学弟学妹说的话" placeholder-class="placeholder-text" value="{{formData.message}}" bindinput="inputMessage" maxlength="200" />
+          <text class="char-count textarea-count {{charLimitReached.message ? 'limit-reached' : ''}}">{{formData.message.length || 0}}/200</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部区域 -->
+  <view class="bottom-container">
+    <view class="bottom-section">
+      <view class="tip-text">
+        <t-icon name="info-circle" size="24px" color="#9CA3AF" />
+        <text>爆料发布后会接受魔法审查，稍等片刻，马上出现!</text>
+      </view>
+      <t-button theme="primary" size="large" block class="publish-btn" bindtap="publish">发布</t-button>
+    </view>
+  </view>
+
+  <!-- 行业选择器 -->
+  <t-popup visible="{{industryPickerVisible}}" placement="bottom" bind:visible-change="industryPickerVisibleChange">
+    <t-picker columns="{{industryColumns}}" bind:change="industryChange" />
+  </t-popup>
+
+  <!-- 地区选择器 -->
+  <t-popup visible="{{regionPickerVisible}}" placement="bottom" bind:visible-change="regionPickerVisibleChange">
+    <t-picker columns="{{regionColumns}}" bind:change="regionChange" />
+  </t-popup>
 </view>

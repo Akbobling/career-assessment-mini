@@ -65,12 +65,4 @@
     </view>
   </view>
   
-  <view wx:if="{{type === 'signature'}}" class="edit-item">
-    <t-textarea 
-      placeholder="请输入签名" 
-      value="{{signature}}" 
-      bind:change="onSignatureInput"
-      autosize
-    />
-  </view>
 </view>

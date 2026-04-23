@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "选择地区",
+  "usingComponents": {
+    "t-search": "tdesign-miniprogram/search/search",
+    "t-tree-select": "tdesign-miniprogram/tree-select/tree-select",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-tag": "tdesign-miniprogram/tag/tag"
+  }
+}

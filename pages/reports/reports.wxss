@@ -1,0 +1,58 @@
+.page {
+  min-height: 100vh;
+  background-color: #F0F9FF;
+  padding: 24rpx;
+}
+
+.empty-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.report-time {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.report-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.report-result {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.result-text {
+  font-size: 28rpx;
+  color: #1E3A8A;
+  font-weight: 600;
+}
+
+.report-action {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.action-link {
+  font-size: 26rpx;
+  color: #3B82F6;
+}

@@ -1,14 +1,23 @@
+const db = wx.cloud.database();
+
 Page({
   data: {
     userInfo: {
       avatar: '',
       name: '',
       gender: '',
-      school: '',
-      phone: '',
-      phoneDisplay: '',
-      signature: ''
-    }
+      education: '',
+      school: ''
+    },
+    educationVisible: false,
+    educationValue: [],
+    educationOptions: [
+      { label: '专科', value: '专科' },
+      { label: '本科', value: '本科' },
+      { label: '硕士', value: '硕士' },
+      { label: '博士', value: '博士' },
+      { label: '其它', value: '其它' }
+    ]
   },
   onLoad() {
     this.getUserInfo();
@@ -16,55 +25,48 @@ Page({
   onShow() {
     this.getUserInfo();
   },
-  getUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo') || {};
-    const phone = userInfo.phone || '';
-    const phoneDisplay = phone ? this.maskPhone(phone) : '';
-    this.setData({
-      userInfo: {
-        avatar: userInfo.avatarUrl || '',
-        name: userInfo.nickName || '',
-        gender: userInfo.gender || '',
-        school: userInfo.school || '',
-        phone: phone,
-        phoneDisplay: phoneDisplay,
-        signature: userInfo.signature || ''
+  async getUserInfo() {
+    try {
+      // Try to load from cloud first
+      const res = await db.collection('USER_PROFILES').limit(1).get();
+      if (res.data.length > 0) {
+        const cloudData = res.data[0];
+        this.setData({
+          userInfo: {
+            avatar: cloudData.avatarUrl || '',
+            name: cloudData.nickName || '',
+            gender: cloudData.gender || '',
+            education: cloudData.education || '',
+            school: cloudData.school || ''
+          }
+        });
+        // Sync to local storage for fallback
+        wx.setStorageSync('userInfo', cloudData);
+      } else {
+        // Fallback to local storage
+        const userInfo = wx.getStorageSync('userInfo') || {};
+        this.setData({
+          userInfo: {
+            avatar: userInfo.avatarUrl || '',
+            name: userInfo.nickName || '',
+            gender: userInfo.gender || '',
+            education: userInfo.education || '',
+            school: userInfo.school || ''
+          }
+        });
       }
-    });
-  },
-  maskPhone(phone) {
-    if (phone.length === 11) {
-      return phone.substring(0, 3) + '****' + phone.substring(7);
-    }
-    return phone;
-  },
-  getPhoneNumber(e) {
-    if (e.detail.code) {
-      wx.cloud.callFunction({
-        name: 'getPhoneNumber',
-        data: {
-          code: e.detail.code
+    } catch (err) {
+      console.error('加载用户信息失败:', err);
+      // Fallback to local storage on error
+      const userInfo = wx.getStorageSync('userInfo') || {};
+      this.setData({
+        userInfo: {
+          avatar: userInfo.avatarUrl || '',
+          name: userInfo.nickName || '',
+          gender: userInfo.gender || '',
+          education: userInfo.education || '',
+          school: userInfo.school || ''
         }
-      }).then(res => {
-        if (res.result && res.result.phoneNumber) {
-          const phone = res.result.phoneNumber;
-          const phoneDisplay = this.maskPhone(phone);
-          const userInfo = wx.getStorageSync('userInfo') || {};
-          userInfo.phone = phone;
-          wx.setStorageSync('userInfo', userInfo);
-          this.setData({
-            'userInfo.phone': phone,
-            'userInfo.phoneDisplay': phoneDisplay
-          });
-          this.selectComponent('#t-toast').show({
-            theme: 'success',
-            context: this,
-            selector: '#t-toast',
-            message: '已填写手机号'
-          });
-        }
-      }).catch(err => {
-        console.error('获取手机号失败:', err);
       });
     }
   },
@@ -83,10 +85,45 @@ Page({
       url: '/pages/edit-profile/edit-profile?type=gender'
     });
   },
-  editSignature() {
-    wx.navigateTo({
-      url: '/pages/edit-profile/edit-profile?type=signature'
+  editEducation() {
+    const currentEducation = this.data.userInfo.education || '';
+    const matchedOption = this.data.educationOptions.find(opt => opt.label === currentEducation);
+    this.setData({
+      educationValue: matchedOption ? [matchedOption.value] : [],
+      educationVisible: true
     });
+  },
+  async onEducationChange(e) {
+    const { value, label } = e.detail;
+    const educationLabel = Array.isArray(label) ? label.join('') : (label || '');
+    const userInfo = wx.getStorageSync('userInfo') || {};
+    userInfo.education = educationLabel;
+    wx.setStorageSync('userInfo', userInfo);
+    this.setData({
+      educationValue: value || [],
+      'userInfo.education': educationLabel,
+      educationVisible: false
+    });
+    // Sync to cloud
+    try {
+      const res = await db.collection('USER_PROFILES').limit(1).get();
+      if (res.data.length > 0) {
+        await db.collection('USER_PROFILES').doc(res.data[0]._id).update({
+          data: { education: educationLabel }
+        });
+      } else {
+        // Remove system fields before add
+        const { _id, _openid, ...addData } = userInfo;
+        await db.collection('USER_PROFILES').add({
+          data: addData
+        });
+      }
+    } catch (err) {
+      console.error('更新学历到云端失败:', err);
+    }
+  },
+  onEducationCancel() {
+    this.setData({ educationVisible: false });
   },
   editSchool() {
     wx.navigateTo({

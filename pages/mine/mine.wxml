@@ -9,6 +9,9 @@
       <t-cell title="基本信息" arrow hover bindtap="goToProfile" t-class-left-icon="cell-icon">
         <t-icon slot="left-icon" name="personal-information" size="48rpx" />
       </t-cell>
+      <t-cell title="我的报告" arrow hover bindtap="goToReports">
+        <t-icon slot="left-icon" name="file-icon" size="48rpx" />
+      </t-cell>
       <t-cell title="我的爆料" arrow hover>
         <t-icon slot="left-icon" name="loudspeaker" size="48rpx" />
       </t-cell>

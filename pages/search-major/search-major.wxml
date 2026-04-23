@@ -1,0 +1,30 @@
+<view class="page">
+  <t-search
+    placeholder="搜索专业名称"
+    value="{{searchKeyword}}"
+    bind:change="onMajorSearch"
+    bind:submit="onMajorSearch"
+    bind:clear="onSearchClear"
+  />
+
+  <view wx:if="{{searching}}" class="search-loading">
+    <t-loading theme="circular" size="40rpx" />
+    <text>搜索中...</text>
+  </view>
+
+  <view wx:elif="{{majorList.length > 0}}" class="major-list">
+    <t-cell
+      wx:for="{{majorList}}"
+      wx:key="name"
+      title="{{item.name}}"
+      note="{{item.category || ''}}"
+      hover
+      bindtap="selectMajor"
+      data-major="{{item.name}}"
+    />
+  </view>
+
+  <view wx:elif="{{searchKeyword && !searching && majorList.length === 0}}" class="search-empty">
+    未找到相关专业
+  </view>
+</view>

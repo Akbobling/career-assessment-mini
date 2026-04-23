@@ -1,0 +1,31 @@
+.page {
+  min-height: 100vh;
+  background: #FFFFFF;
+  padding: 20rpx 30rpx;
+}
+
+.search-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.search-loading text {
+  margin-left: 16rpx;
+}
+
+.major-list {
+  margin-top: 20rpx;
+  max-height: 800rpx;
+  overflow-y: auto;
+}
+
+.search-empty {
+  text-align: center;
+  padding: 60rpx;
+  color: #999;
+  font-size: 28rpx;
+}

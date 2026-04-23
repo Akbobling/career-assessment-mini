@@ -1,0 +1,56 @@
+.page {
+  min-height: 100vh;
+  background: #FFFFFF;
+  padding: 20rpx 30rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-results {
+  margin-top: 20rpx;
+}
+
+.search-empty {
+  text-align: center;
+  padding: 60rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.region-content {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 24rpx;
+  padding-bottom: 160rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  padding: 20rpx 32rpx;
+  border-top: 1rpx solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  z-index: 100;
+}
+
+.selected-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.selected-label {
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.selected-value {
+  font-size: 28rpx;
+  color: #1E3A8A;
+  font-weight: 600;
+}

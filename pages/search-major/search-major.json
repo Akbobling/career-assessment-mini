@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "搜索专业",
+  "usingComponents": {
+    "t-search": "tdesign-miniprogram/search/search",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-loading": "tdesign-miniprogram/loading/loading"
+  }
+}

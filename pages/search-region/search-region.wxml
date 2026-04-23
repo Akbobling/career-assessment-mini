@@ -1,0 +1,42 @@
+<view class="page">
+  <t-search
+    placeholder="搜索地区"
+    value="{{searchKeyword}}"
+    bind:change="onRegionSearch"
+    bind:submit="onRegionSearch"
+    bind:clear="onSearchClear"
+  />
+
+  <view wx:if="{{searchKeyword && searchResults.length > 0}}" class="search-results">
+    <t-cell
+      wx:for="{{searchResults}}"
+      wx:key="label"
+      title="{{item.label}}"
+      hover
+      bindtap="selectSearchResult"
+      data-region="{{item.label}}"
+    />
+  </view>
+
+  <view wx:elif="{{searchKeyword && searchResults.length === 0}}" class="search-empty">
+    未找到相关地区
+  </view>
+
+  <view wx:if="{{!searchKeyword}}" class="region-content">
+    <!-- 省市选择（热门已整合在第一级） -->
+    <t-tree-select
+      value="{{treeValue}}"
+      options="{{treeOptions}}"
+      height="{{treeHeight}}"
+      bindchange="onTreeChange"
+    />
+  </view>
+
+  <view class="bottom-bar">
+    <view class="selected-info">
+      <text class="selected-label">已选：</text>
+      <text class="selected-value">{{selectedRegion || '未选择'}}</text>
+    </view>
+    <t-button theme="primary" size="large" bindtap="onConfirm" disabled="{{!selectedRegion}}">确定</t-button>
+  </view>
+</view>

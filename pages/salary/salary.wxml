@@ -1,6 +1,161 @@
-<view class="salary-container">
-  <text>薪资爆料页面</text>
+<view class="page-bg">
+  <!-- 顶部选项卡 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'school' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="school">
+      <text class="tab-text">校内爆料</text>
+    </view>
+    <view class="tab-item {{activeTab === 'square' ? 'tab-active' : ''}}" bindtap="switchTab" data-tab="square">
+      <text class="tab-text">广场</text>
+    </view>
+    <view class="tab-item tab-filter" bindtap="openFilter">
+      <t-icon name="filter" size="16px" color="{{filterCount > 0 ? '#3B82F6' : '#6B7280'}}" />
+      <text class="tab-text {{filterCount > 0 ? 'tab-text-active' : ''}}">筛选{{filterCount > 0 ? '(' + filterCount + ')' : ''}}</text>
+      <t-icon name="caret-down-small" size="16px" color="{{filterCount > 0 ? '#3B82F6' : '#6B7280'}}" />
+    </view>
+  </view>
+
+  <!-- 爆料列表 -->
+  <view class="salary-list" wx:if="{{salaryList.length > 0}}">
+    <view class="salary-card" wx:for="{{salaryList}}" wx:key="_id">
+      <view class="card-user">
+        <view class="user-avatar">
+          <t-icon name="user" size="20px" color="#FFFFFF" />
+        </view>
+        <view class="user-info">
+          <view class="user-id-row">
+            <text class="user-id-num">{{item.userId}}</text>
+            <text class="user-edu">{{item.education}}</text>
+          </view>
+          <text class="user-school">{{item.school}} | {{item.gradYear}}</text>
+        </view>
+      </view>
+
+      <view class="card-job">
+        <view class="job-tag">{{item.tag}}</view>
+        <view class="job-detail">
+          <view class="job-company-position">
+            <text class="job-company">{{item.company}}</text>
+            <text class="job-position">{{item.position}}</text>
+          </view>
+          <text class="job-salary">{{item.salary}}</text>
+        </view>
+      </view>
+
+      <view class="card-desc">
+        <text class="desc-text">{{item.desc}}</text>
+        <text class="desc-full">全文</text>
+      </view>
+
+      <view class="card-meta">
+        <view class="meta-item">
+          <t-icon name="location" size="14px" color="#3B82F6" />
+          <text class="meta-text">{{item.location}}</text>
+        </view>
+        <view class="meta-item">
+          <t-icon name="chart-bar" size="14px" color="#60A5FA" />
+          <text class="meta-text">{{item.industry}}</text>
+        </view>
+      </view>
+
+      <view class="card-actions">
+        <view class="action-left">
+          <view class="action-btn">
+            <t-icon name="chat" size="16px" color="#9CA3AF" />
+            <text class="action-num">{{item.comments}}</text>
+          </view>
+          <view class="action-btn" bindtap="onLike" data-id="{{item._id}}">
+            <t-icon name="thumb-up" size="16px" color="#9CA3AF" />
+            <text class="action-num">{{item.likes}}</text>
+          </view>
+          <view class="action-btn" bindtap="onCollect" data-id="{{item._id}}">
+            <t-icon name="star" size="16px" color="#9CA3AF" />
+            <text class="action-num">{{item.collects}}</text>
+          </view>
+        </view>
+        <view class="share-btn" bindtap="onShare" data-id="{{item._id}}">
+          <t-icon name="share" size="14px" color="#FFFFFF" />
+          <text class="share-text">分享</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-wrap" wx:if="{{!loading && salaryList.length === 0}}">
+    <t-empty icon="file-search" description="暂无爆料内容" />
+  </view>
+
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40rpx" text="加载中..." />
+  </view>
+
+  <view class="fab-btn" bindtap="goToPublish">
+    <t-icon name="edit-2" size="48rpx" color="#fff" />
+  </view>
+  <t-backtop theme="half-round" icon="backtop" scroll-top="{{scrollTop}}" bind:to-top="onBackToTop" style="bottom: 320rpx;" />
 </view>
-<view class="fab-btn" bindtap="goToPublish">
-  <t-icon name="edit-2" size="48rpx" color="#fff" />
-</view>
+
+<!-- 筛选弹出层 -->
+<t-popup visible="{{filterVisible}}" placement="bottom" bind:visible-change="onFilterClose">
+  <view class="filter-panel">
+    <view class="filter-header">
+      <text class="filter-title">筛选条件</text>
+    </view>
+
+    <!-- 类型 -->
+    <view class="filter-section">
+      <text class="filter-label">类型</text>
+      <t-radio-group value="{{filterType}}" bind:change="onTypeChange" borderless>
+        <t-radio wx:for="{{typeOptions}}" wx:key="value" value="{{item.value}}" label="{{item.label}}" icon="line" />
+      </t-radio-group>
+    </view>
+
+    <!-- 学历 -->
+    <view class="filter-section">
+      <text class="filter-label">学历</text>
+      <t-radio-group value="{{filterEdu}}" bind:change="onEduChange" borderless>
+        <t-radio wx:for="{{eduOptions}}" wx:key="value" value="{{item.value}}" label="{{item.label}}" icon="line" />
+      </t-radio-group>
+    </view>
+
+    <!-- 学校（校内爆料时隐藏） -->
+    <view class="filter-section" wx:if="{{activeTab !== 'school'}}">
+      <text class="filter-label">学校</text>
+      <t-cell title="{{filterSchool || '请选择学校'}}" arrow hover bindtap="goToSearchSchool" />
+    </view>
+
+    <!-- 专业 -->
+    <view class="filter-section">
+      <text class="filter-label">专业</text>
+      <t-cell title="{{filterMajor || '请选择专业'}}" arrow hover bindtap="goToSearchMajor" />
+    </view>
+
+    <!-- 毕业年份 -->
+    <view class="filter-section">
+      <text class="filter-label">毕业年份</text>
+      <t-cell title="{{filterGradYear || '请选择年份'}}" arrow hover bindtap="onGradYearClick" />
+      <t-picker
+        visible="{{gradYearVisible}}"
+        value="{{gradYearValue}}"
+        title="选择毕业年份"
+        cancelBtn="取消"
+        confirmBtn="确认"
+        bindchange="onGradYearChange"
+        bindcancel="onGradYearCancel"
+      >
+        <t-picker-item options="{{gradYearOptions}}" />
+      </t-picker>
+    </view>
+
+    <!-- 地区 -->
+    <view class="filter-section">
+      <text class="filter-label">地区</text>
+      <t-cell title="{{filterRegion || '请选择地区'}}" arrow hover bindtap="goToSearchRegion" />
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="filter-footer">
+      <t-button theme="light" size="large" bindtap="onFilterReset" style="flex:1">重置</t-button>
+      <t-button theme="primary" size="large" bindtap="onFilterConfirm" style="flex:1">确定</t-button>
+    </view>
+  </view>
+</t-popup>

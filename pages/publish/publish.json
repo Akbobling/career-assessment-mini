@@ -1,3 +1,11 @@
 {
-  "navigationBarTitleText": "发布"
+  "navigationBarTitleText": "薪资爆料",
+  "navigationBarBackgroundColor": "#1E3A8A",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-picker": "tdesign-miniprogram/picker/picker",
+    "t-popup": "tdesign-miniprogram/popup/popup",
+    "t-button": "tdesign-miniprogram/button/button"
+  }
 }
