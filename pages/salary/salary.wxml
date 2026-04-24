@@ -16,17 +16,18 @@
 
   <!-- 爆料列表 -->
   <view class="salary-list" wx:if="{{salaryList.length > 0}}">
-    <view class="salary-card" wx:for="{{salaryList}}" wx:key="_id">
+    <view class="salary-card" wx:for="{{salaryList}}" wx:key="_id" bindtap="goToDetail" data-id="{{item._id}}">
       <view class="card-user">
-        <view class="user-avatar">
+        <image class="user-avatar" src="{{item.avatarUrl}}" mode="aspectFill" wx:if="{{item.avatarUrl}}" />
+        <view class="user-avatar user-avatar-default" wx:else>
           <t-icon name="user" size="20px" color="#FFFFFF" />
         </view>
         <view class="user-info">
           <view class="user-id-row">
-            <text class="user-id-num">{{item.userId}}</text>
-            <text class="user-edu">{{item.education}}</text>
+            <text class="user-id-num">{{item.userName}}</text>
+            <text class="user-edu">{{item.education === '本科' ? '本' : item.education === '硕士' ? '硕' : item.education === '博士' ? '博' : item.education}}</text>
           </view>
-          <text class="user-school">{{item.school}} | {{item.gradYear}}</text>
+          <text class="user-school">{{item.school}} | {{item.gradYear}}毕业</text>
         </view>
       </view>
 
@@ -37,13 +38,14 @@
             <text class="job-company">{{item.company}}</text>
             <text class="job-position">{{item.position}}</text>
           </view>
-          <text class="job-salary">{{item.salary}}</text>
+          <text class="job-salary" wx:if="{{item.tag === '校招' || item.tag === '社招'}}">{{item.salaryType}}{{item.annualSalary}}万/年</text>
+          <text class="job-salary" wx:if="{{item.tag === '实习'}}">￥{{item.dailySalary}}元/天</text>
         </view>
       </view>
 
-      <view class="card-desc">
+      <view class="card-desc" wx:if="{{item.desc}}">
         <text class="desc-text">{{item.desc}}</text>
-        <text class="desc-full">全文</text>
+        <text class="desc-full" wx:if="{{item.desc.length > 22}}">全文</text>
       </view>
 
       <view class="card-meta">
@@ -63,18 +65,14 @@
             <t-icon name="chat" size="16px" color="#9CA3AF" />
             <text class="action-num">{{item.comments}}</text>
           </view>
-          <view class="action-btn" bindtap="onLike" data-id="{{item._id}}">
+          <view class="action-btn">
             <t-icon name="thumb-up" size="16px" color="#9CA3AF" />
             <text class="action-num">{{item.likes}}</text>
           </view>
-          <view class="action-btn" bindtap="onCollect" data-id="{{item._id}}">
+          <view class="action-btn">
             <t-icon name="star" size="16px" color="#9CA3AF" />
             <text class="action-num">{{item.collects}}</text>
           </view>
-        </view>
-        <view class="share-btn" bindtap="onShare" data-id="{{item._id}}">
-          <t-icon name="share" size="14px" color="#FFFFFF" />
-          <text class="share-text">分享</text>
         </view>
       </view>
     </view>

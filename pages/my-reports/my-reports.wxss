@@ -1,0 +1,66 @@
+.my-reports-container {
+  min-height: 100vh;
+  background: #F5F7FA;
+}
+
+.tab-content {
+  padding: 24rpx;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80rpx 0;
+}
+
+.empty-wrap {
+  padding: 80rpx 0;
+}
+
+.report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.report-item {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.status-badge {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.status-approved {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.status-rejected {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.status-deleted {
+  background: #F3F4F6;
+  color: #6B7280;
+}
+
+.item-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16rpx;
+  padding: 16rpx 24rpx;
+  border-top: 1rpx solid #E5E7EB;
+}

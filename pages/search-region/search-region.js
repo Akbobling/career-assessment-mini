@@ -71,13 +71,26 @@ Page({
     }
   },
 
+  onLoad(options) {
+    const { from } = options;
+    this.setData({ from });
+  },
+
   onConfirm() {
-    const { selectedRegion } = this.data;
+    const { selectedRegion, from } = this.data;
     if (!selectedRegion) return;
-    const cache = wx.getStorageSync('salaryFilterCache') || {};
-    cache.filterRegion = selectedRegion;
-    cache.dirty = true;
-    wx.setStorageSync('salaryFilterCache', cache);
+
+    if (from === 'publish') {
+      // 发布页来源，使用 publishRegionCache
+      wx.setStorageSync('publishRegionCache', { filterRegion: selectedRegion });
+    } else {
+      // 薪资页来源，使用 salaryFilterCache
+      const cache = wx.getStorageSync('salaryFilterCache') || {};
+      cache.filterRegion = selectedRegion;
+      cache.dirty = true;
+      wx.setStorageSync('salaryFilterCache', cache);
+    }
+
     wx.navigateBack();
   }
 })

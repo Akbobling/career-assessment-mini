@@ -1,0 +1,73 @@
+<view class="my-reports-container">
+  <t-tabs value="{{activeTab}}" bind:change="onTabChange" theme="line">
+    <t-tab-panel label="我的爆料" value="0" />
+    <t-tab-panel label="我的收藏" value="1" />
+  </t-tabs>
+
+  <!-- 我的爆料 -->
+  <view class="tab-content" wx:if="{{activeTab === 0}}">
+    <view class="loading-wrap" wx:if="{{loading}}">
+      <t-loading theme="circular" size="40rpx" text="加载中..." />
+    </view>
+
+    <view class="empty-wrap" wx:if="{{!loading && myReports.length === 0}}">
+      <t-empty icon="file-search" description="暂无爆料" />
+    </view>
+
+    <view class="report-list" wx:if="{{!loading && myReports.length > 0}}">
+      <view class="report-item" wx:for="{{myReports}}" wx:key="_id">
+        <t-cell-group>
+          <t-cell title="{{item.company}}" note="{{item.position}}" hover bindtap="goToDetail" data-id="{{item._id}}">
+            <view slot="note" class="status-badge status-{{item.status}}">
+              {{item.status === 'pending' ? '待审核' : item.status === 'approved' ? '已通过' : item.status === 'rejected' ? '已拒绝' : '已删除'}}
+            </view>
+          </t-cell>
+          <t-cell title="{{item.salary}}" note="{{item.location}}" />
+          <t-cell title="{{item.industry}}" note="{{item.timestamp}}" />
+        </t-cell-group>
+        
+        <view class="item-actions" wx:if="{{item.status !== 'deleted'}}">
+          <t-button size="small" theme="light" bindtap="onEdit" data-id="{{item._id}}">编辑</t-button>
+          <t-button size="small" theme="light" bindtap="onDelete" data-id="{{item._id}}">删除</t-button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的收藏 -->
+  <view class="tab-content" wx:if="{{activeTab === 1}}">
+    <view class="loading-wrap" wx:if="{{loading}}">
+      <t-loading theme="circular" size="40rpx" text="加载中..." />
+    </view>
+
+    <view class="empty-wrap" wx:if="{{!loading && myCollects.length === 0}}">
+      <t-empty icon="star" description="暂无收藏" />
+    </view>
+
+    <view class="report-list" wx:if="{{!loading && myCollects.length > 0}}">
+      <view class="report-item" wx:for="{{myCollects}}" wx:key="_id">
+        <t-cell-group>
+          <t-cell title="{{item.company}}" note="{{item.position}}" hover bindtap="goToDetail" data-id="{{item._id}}" />
+          <t-cell title="{{item.salary}}" note="{{item.location}}" />
+          <t-cell title="{{item.industry}}" note="{{item.formattedDate}}" />
+        </t-cell-group>
+        
+        <view class="item-actions">
+          <t-button size="small" theme="light" bindtap="onUncollect" data-id="{{item._id}}">取消收藏</t-button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-dialog
+  visible="{{dialogVisible}}"
+  title="提示"
+  content="{{dialogType === 'delete' ? '确定要删除这条爆料吗？' : '确定要取消收藏吗？'}}"
+  confirm-btn="确定"
+  cancel-btn="取消"
+  bindconfirm="onDialogConfirm"
+  bindcancel="onDialogCancel"
+/>
+
+<t-toast id="t-toast" />

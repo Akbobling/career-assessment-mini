@@ -1,22 +1,22 @@
 <view class="edit-container">
   <view wx:if="{{type === 'avatar'}}" class="edit-avatar">
-    <t-avatar 
-      size="200rpx" 
-      image="{{avatarUrl || ''}}" 
+    <t-avatar
+      size="200rpx"
+      image="{{avatarUrl || ''}}"
       shape="circle"
     />
-    <t-button 
-      theme="primary" 
-      size="large" 
-      class="wechat-avatar-btn" 
+    <t-button
+      theme="primary"
+      size="large"
+      class="wechat-avatar-btn"
       open-type="chooseAvatar" bind:chooseavatar="onChooseWechatAvatar"
     >
       更换头像
     </t-button>
   </view>
-  
+
   <view wx:if="{{type === 'name'}}" class="edit-item">
-    <t-input placeholder="请输入名字" value="{{name}}" bind:change="onNameInput" />
+    <t-input placeholder="请输入昵称" value="{{name}}" bind:change="onNameInput" />
   </view>
   
   <view wx:if="{{type === 'gender'}}" class="edit-item">

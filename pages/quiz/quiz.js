@@ -66,7 +66,8 @@ Page({
       }
 
       const categories = questions.map(q => q.category);
-      const fullCategories = questions.map(q => `第${['一','二','三','四','五','六','七'][majorOrder - 1] || ''}大类·${q.category}`);
+      const majorOrderIndex = Math.max(0, Math.min(majorOrder - 1, 6));
+      const fullCategories = questions.map(q => `第${['一','二','三','四','五','六','七'][majorOrderIndex] || ''}大类·${q.category}`);
       const itemsPerCategory = questions.length > 0 ? (questions[0].items || []).length : 6;
 
       const allQuestions = flattenQuestions(questions);
@@ -131,18 +132,15 @@ Page({
   _saveProgressCloud() {
     const cacheData = wx.getStorageSync('quizProgressCache');
     if (!cacheData) return;
-    db.collection('QUIZ_PROGRESS_CACHE').where({ _openid: '{openid}' }).count().then(countRes => {
-      if (countRes.total === 0) {
-        db.collection('QUIZ_PROGRESS_CACHE').add({ data: cacheData });
+    db.collection('QUIZ_PROGRESS_CACHE').limit(1).get().then(res => {
+      if (res.data.length > 0) {
+        db.collection('QUIZ_PROGRESS_CACHE').doc(res.data[0]._id).update({ data: cacheData });
       } else {
-        db.collection('QUIZ_PROGRESS_CACHE').where({ _openid: '{openid}' }).get().then(res => {
-          if (res.data.length > 0) {
-            db.collection('QUIZ_PROGRESS_CACHE').doc(res.data[0]._id).update({ data: cacheData });
-          }
-        });
+        db.collection('QUIZ_PROGRESS_CACHE').add({ data: cacheData });
       }
     }).catch(err => {
       console.error('保存答题进度失败：', err);
+      wx.showToast({ title: '保存进度失败', icon: 'none' });
     });
   },
 
@@ -169,12 +167,13 @@ Page({
 
   _clearProgress() {
     wx.removeStorageSync('quizProgressCache');
-    db.collection('QUIZ_PROGRESS_CACHE').where({ _openid: '{openid}' }).get().then(res => {
+    db.collection('QUIZ_PROGRESS_CACHE').limit(1).get().then(res => {
       if (res.data.length > 0) {
         db.collection('QUIZ_PROGRESS_CACHE').doc(res.data[0]._id).remove();
       }
     }).catch(err => {
       console.error('清除答题进度失败：', err);
+      wx.showToast({ title: '清除进度失败', icon: 'none' });
     });
   },
 
@@ -240,23 +239,6 @@ Page({
     }, 200);
   },
 
-  // DEBUG-START: 后门方法，上线前移除
-  handleDebugFill() {
-    const { allQuestions, answers, answerTimes } = this.data;
-    const nextAnswers = { ...answers };
-    const nextAnswerTimes = { ...answerTimes };
-    allQuestions.forEach(q => {
-      if (!nextAnswers[q.id]) {
-        nextAnswers[q.id] = Math.floor(Math.random() * 5) + 1;
-        nextAnswerTimes[q.id] = Math.floor(Math.random() * 3000) + 500;
-      }
-    });
-    this.setData({ answers: nextAnswers, answerTimes: nextAnswerTimes }, () => {
-      this.handleSubmit();
-    });
-  },
-  // DEBUG-END
-
   handleSubmit() {
     const { total, answers, answerTimes, quizType, majorOrder, categories, fullCategories, itemsPerCategory } = this.data;
     const answeredCount = Object.keys(answers).length;
@@ -284,7 +266,7 @@ Page({
 
     const answersStr = encodeURIComponent(JSON.stringify(answers));
     const timesStr = encodeURIComponent(JSON.stringify(answerTimes));
-    this.data._submitted = true;
+    this.setData({ _submitted: true });
     this._clearProgress();
     wx.redirectTo({
       url: `/pages/result/result?type=${quizType}&majorOrder=${majorOrder}&answers=${answersStr}&answerTimes=${timesStr}`

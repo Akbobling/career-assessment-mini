@@ -1,0 +1,422 @@
+.detail-container {
+  min-height: 100vh;
+  background: #FAFBFC;
+  padding-bottom: 120rpx;
+}
+
+.loading-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: #FFFFFF;
+  margin-bottom: 0;
+  gap: 20rpx;
+  border-bottom: none;
+}
+
+.user-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #F3F4F6;
+  margin-right: 16rpx;
+}
+
+.user-avatar-default {
+  background: #3B82F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.user-id-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.user-id-num {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #000000;
+}
+
+.user-edu {
+  font-size: 24rpx;
+  color: #3B82F6;
+  font-weight: 500;
+}
+
+.user-school {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.user-major {
+  margin-top: 8rpx;
+}
+
+.user-major-tag {
+  background: #F8F9FA !important;
+  color: #3B82F6 !important;
+  font-size: 20rpx !important;
+  padding: 4rpx 12rpx !important;
+}
+
+.status-tag {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-pending {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+.status-approved {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.status-rejected {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.report-card {
+  background: #FFFFFF;
+  padding: 32rpx;
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+/* 用户职业标题区域 */
+.user-title-section {
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+}
+
+.user-title-tag {
+  background: #F8F9FA !important;
+  color: #3B82F6 !important;
+  border-radius: 999rpx;
+  padding: 12rpx 24rpx;
+}
+
+/* 分隔线 */
+.native-divider {
+  height: 1rpx;
+  background: #E5E7EB;
+  margin: 0;
+}
+
+.card-section {
+  display: flex;
+  margin-bottom: 32rpx;
+  align-items: flex-start;
+}
+
+.card-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-label {
+  width: 140rpx;
+  font-size: 28rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+  padding-top: 4rpx;
+}
+
+.section-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1F2937;
+  line-height: 1.6;
+  margin-left: 24rpx;
+}
+
+.salary-highlight {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #3B82F6;
+}
+
+.section-value-with-tag {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.salary-type-tag {
+  background: linear-gradient(90deg, #3B82F6 0%, #1E3A8A 100%);
+  color: #FFFFFF;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 4rpx 10rpx;
+  border-radius: 999rpx;
+  flex-shrink: 0;
+  line-height: 1.5;
+  min-width: auto;
+  text-align: center;
+}
+
+.section-value-with-tag {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.salary-desc-text {
+  color: #3B82F6 !important;
+}
+
+.desc-text {
+  white-space: pre-wrap;
+  margin-left: 0;
+  width: 100%;
+}
+
+.user-bg {
+  background: #FFFFFF;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+}
+
+.bg-item {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.bg-item:last-child {
+  margin-bottom: 0;
+}
+
+.bg-label {
+  width: 140rpx;
+  font-size: 28rpx;
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.bg-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #1F2937;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-around;
+  background: #FFFFFF;
+  padding: 24rpx 32rpx;
+  margin-bottom: 16rpx;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+}
+
+.stat-text {
+  margin-left: 8rpx;
+  font-size: 28rpx;
+  color: #6B7280;
+}
+
+.comments-section {
+  background: #FFFFFF;
+  padding: 32rpx;
+  margin-bottom: 16rpx;
+}
+
+.comments-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 24rpx;
+}
+
+.comments-list {
+  margin-bottom: 24rpx;
+}
+
+.comment-item {
+  display: flex;
+  margin-bottom: 24rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #E5E7EB;
+}
+
+.comment-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.comment-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #9CA3AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.comment-user {
+  font-size: 28rpx;
+  color: #1F2937;
+  font-weight: 500;
+}
+
+.comment-time {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.comment-reply {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.reply-tag {
+  font-size: 24rpx;
+  color: #3B82F6;
+  margin-right: 8rpx;
+}
+
+.reply-text {
+  font-size: 24rpx;
+  color: #6B7280;
+}
+
+.comment-text {
+  font-size: 28rpx;
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 12rpx;
+}
+
+.comment-actions {
+  display: flex;
+}
+
+.comment-action {
+  display: flex;
+  align-items: center;
+  margin-right: 24rpx;
+}
+
+.action-text {
+  margin-left: 4rpx;
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.empty-comments {
+  padding: 40rpx 0;
+}
+
+.loading-comments {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  padding: 16rpx 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  border-top: 1rpx solid #E5E7EB;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.timestamp-section {
+  padding: 24rpx 32rpx;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.timestamp-text {
+  font-size: 24rpx;
+  color: #9CA3AF;
+}
+
+.comment-input-wrapper {
+  flex: 1;
+}
+
+.reply-hint {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.reply-hint-text {
+  font-size: 24rpx;
+  color: #3B82F6;
+  margin-right: 8rpx;
+}
+
+.comment-input {
+  background: #FAFBFC;
+  border-radius: 8rpx;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.send-action {
+  background: #F8F9FA;
+}
+
+.bar-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #FAFBFC;
+}

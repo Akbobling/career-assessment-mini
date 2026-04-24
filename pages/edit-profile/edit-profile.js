@@ -36,16 +36,44 @@ Page({
   },
   
   chooseAvatar() {
+    console.log('[头像上传] 开始选择头像');
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
       success: (res) => {
         const tempFilePath = res.tempFiles[0].tempFilePath;
-        this.setData({
-          avatarUrl: tempFilePath
+        console.log('[头像上传] 选择的临时文件路径:', tempFilePath);
+        wx.showLoading({ title: '上传中...', mask: true });
+
+        // 上传到云存储
+        const cloudPath = `avatars/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+        console.log('[头像上传] 云存储路径:', cloudPath);
+        wx.cloud.uploadFile({
+          cloudPath: cloudPath,
+          filePath: tempFilePath,
+          success: uploadRes => {
+            wx.hideLoading();
+            const fileID = uploadRes.fileID;
+            console.log('[头像上传] 上传成功，文件ID:', fileID);
+            this.setData({
+              avatarUrl: fileID
+            });
+            this.autoSave('avatar', fileID);
+            wx.showToast({
+              title: '上传成功',
+              icon: 'success'
+            });
+          },
+          fail: err => {
+            wx.hideLoading();
+            console.error('[头像上传] 上传失败:', err);
+            wx.showToast({
+              title: '上传失败',
+              icon: 'none'
+            });
+          }
         });
-        this.autoSave('avatar', tempFilePath);
       }
     });
   },
@@ -53,10 +81,43 @@ Page({
   onChooseWechatAvatar(e) {
     const { avatarUrl } = e.detail;
     if (avatarUrl) {
-      this.setData({
-        avatarUrl: avatarUrl
+      console.log('[微信头像] 微信头像URL:', avatarUrl);
+      wx.showLoading({ title: '上传中...', mask: true });
+
+      // 上传到云存储
+      const cloudPath = `avatars/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.jpg`;
+      console.log('[微信头像] 云存储路径:', cloudPath);
+      wx.cloud.uploadFile({
+        cloudPath: cloudPath,
+        filePath: avatarUrl,
+        success: uploadRes => {
+          wx.hideLoading();
+          const fileID = uploadRes.fileID;
+          console.log('[微信头像] 上传成功，文件ID:', fileID);
+          this.setData({
+            avatarUrl: fileID
+          });
+          this.autoSave('avatar', fileID);
+          wx.showToast({
+            title: '上传成功',
+            icon: 'success'
+          });
+        },
+        fail: err => {
+          wx.hideLoading();
+          console.error('[微信头像] 上传失败:', err);
+          // 上传失败时，直接使用微信头像URL
+          console.log('[微信头像] 上传失败，使用微信头像URL');
+          this.setData({
+            avatarUrl: avatarUrl
+          });
+          this.autoSave('avatar', avatarUrl);
+          wx.showToast({
+            title: '上传失败，使用微信头像',
+            icon: 'none'
+          });
+        }
       });
-      this.autoSave('avatar', avatarUrl);
     }
   },
   
@@ -65,7 +126,38 @@ Page({
     this.setData({
       name: value
     });
-    this.autoSave('name', value);
+    // 不在输入时提示，只在返回时检查
+    // 如果没有设置头像，使用昵称末两位作为默认头像
+    if (!this.data.avatarUrl && value && value.length >= 2) {
+      const defaultAvatar = value.slice(-2);
+      this.setData({
+        avatarUrl: defaultAvatar
+      });
+      this.autoSave('avatar', defaultAvatar);
+    }
+  },
+
+  onUnload() {
+    // 如果是编辑昵称，检查昵称长度
+    if (this.data.type === 'name') {
+      const name = this.data.name;
+      if (!name || name.length < 2) {
+        wx.showToast({
+          title: '昵称至少需要2个字符',
+          icon: 'none',
+          duration: 2000
+        });
+        // 阻止返回，通过重新进入当前页面
+        setTimeout(() => {
+          wx.redirectTo({
+            url: '/pages/edit-profile/edit-profile?type=name'
+          });
+        }, 2000);
+      } else {
+        // 昵称有效，保存到本地和云端
+        this.autoSave('name', name);
+      }
+    }
   },
   
   onGenderClick() {
@@ -170,10 +262,17 @@ Page({
     });
     setTimeout(() => {
       wx.navigateBack();
+      // 通知profile页面检查完成状态
+      const pages = getCurrentPages();
+      const prevPage = pages[pages.length - 2];
+      if (prevPage && prevPage.checkProfileComplete) {
+        prevPage.checkProfileComplete();
+      }
     }, 1000);
   },
   
   async autoSave(field, value) {
+    console.log('[自动保存] 开始保存字段:', field, '值:', value);
     const userInfo = wx.getStorageSync('userInfo') || {};
 
     if (field === 'avatar') {
@@ -187,25 +286,28 @@ Page({
     }
 
     wx.setStorageSync('userInfo', userInfo);
+    console.log('[自动保存] 本地存储已更新，头像URL:', userInfo.avatarUrl);
 
     // Sync to cloud database
-    try {
-      const db = wx.cloud.database();
-      const res = await db.collection('USER_PROFILES').limit(1).get();
-      if (res.data.length > 0) {
-        // Remove system fields before update
-        const { _id, _openid, ...updateData } = userInfo;
-        await db.collection('USER_PROFILES').doc(res.data[0]._id).update({
-          data: updateData
-        });
-      } else {
-        const { _id, _openid, ...addData } = userInfo;
-        await db.collection('USER_PROFILES').add({
-          data: addData
-        });
-      }
-    } catch (err) {
-      console.error('同步用户信息到云端失败:', err);
+    const db = wx.cloud.database();
+    console.log('[自动保存] 开始同步到云端数据库');
+    const res = await db.collection('USER_PROFILES').limit(1).get();
+    console.log('[自动保存] 云端查询结果:', res.data);
+    if (res.data.length > 0) {
+      // Remove system fields before update
+      const { _id, _openid, ...updateData } = userInfo;
+      console.log('[自动保存] 更新云端数据:', updateData);
+      await db.collection('USER_PROFILES').doc(res.data[0]._id).update({
+        data: updateData
+      });
+      console.log('[自动保存] 云端更新成功');
+    } else {
+      const { _id, _openid, ...addData } = userInfo;
+      console.log('[自动保存] 添加云端数据:', addData);
+      await db.collection('USER_PROFILES').add({
+        data: addData
+      });
+      console.log('[自动保存] 云端添加成功');
     }
   }
 })

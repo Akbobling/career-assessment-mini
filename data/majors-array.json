@@ -1,5 +1,4 @@
-const db = wx.cloud.database();
-const MAJORS_DATA = [
+[
 {"name": "哲学", "category": "哲学"},
 {"name": "逻辑学", "category": "哲学"},
 {"name": "宗教学", "category": "哲学"},
@@ -845,81 +844,4 @@ const MAJORS_DATA = [
 {"name": "珠宝首饰设计与工艺", "category": "艺术学"},
 {"name": "人居设计", "category": "艺术学"},
 {"name": "游戏艺术设计", "category": "艺术学"}
-];
-
-Page({
-  data: {
-    searchKeyword: '',
-    majorList: [],
-    searching: false,
-    from: '',
-    allMajors: []
-  },
-  searchTimer: null,
-
-  onLoad(options) {
-    this.setData({ from: options.from || 'filter' });
-    this.loadMajorsCache();
-  },
-
-  loadMajorsCache() {
-    // 直接使用硬编码的专业数据
-    console.log('使用硬编码专业列表:', MAJORS_DATA.length, '条');
-    this.setData({ allMajors: MAJORS_DATA });
-  },
-
-  onMajorSearch(e) {
-    let keyword = '';
-    if (typeof e.detail === 'string') {
-      keyword = e.detail;
-    } else if (e.detail && typeof e.detail.value === 'string') {
-      keyword = e.detail.value;
-    } else if (e.detail && e.detail.value && typeof e.detail.value.value === 'string') {
-      keyword = e.detail.value.value;
-    }
-
-    this.setData({ searchKeyword: keyword });
-
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    if (!keyword || !keyword.trim()) {
-      this.setData({ majorList: [], searching: false });
-      return;
-    }
-
-    this.setData({ searching: true });
-    this.searchTimer = setTimeout(() => {
-      this.searchMajorsLocal(keyword.trim());
-    }, 300);
-  },
-
-  onSearchClear() {
-    this.setData({ searchKeyword: '', majorList: [], searching: false });
-  },
-
-  searchMajorsLocal(keyword) {
-    console.log('搜索关键词:', keyword);
-    console.log('专业列表总数:', this.data.allMajors.length);
-    // 使用本地缓存的专业列表进行搜索
-    const filtered = this.data.allMajors.filter(major =>
-      major.name.toLowerCase().includes(keyword.toLowerCase())
-    ).slice(0, 30);
-    console.log('搜索结果:', filtered.length, '条');
-    this.setData({ majorList: filtered, searching: false });
-  },
-
-  selectMajor(e) {
-    const major = e.currentTarget.dataset.major;
-    if (this.data.from === 'profile') {
-      // 更新个人信息
-      wx.setStorageSync('profileMajorCache', major);
-      wx.navigateBack();
-    } else {
-      // 更新筛选缓存
-      const cache = wx.getStorageSync('salaryFilterCache') || {};
-      cache.filterMajor = major;
-      cache.dirty = true;
-      wx.setStorageSync('salaryFilterCache', cache);
-      wx.navigateBack();
-    }
-  }
-})
+]

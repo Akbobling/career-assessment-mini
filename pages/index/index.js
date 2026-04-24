@@ -43,12 +43,13 @@ Page({
 
   _clearCachedProgress() {
     wx.removeStorageSync('quizProgressCache');
-    db.collection('QUIZ_PROGRESS_CACHE').where({ _openid: '{openid}' }).get().then(res => {
+    db.collection('QUIZ_PROGRESS_CACHE').limit(1).get().then(res => {
       if (res.data.length > 0) {
         db.collection('QUIZ_PROGRESS_CACHE').doc(res.data[0]._id).remove();
       }
     }).catch(err => {
       console.error('清除缓存进度失败：', err);
+      wx.showToast({ title: '清除进度失败', icon: 'none' });
     });
   },
 
@@ -107,7 +108,12 @@ Page({
     } else if (dialogType === 'medium') {
       wx.removeStorageSync('mediumQuizResult');
       this.setData({ mediumResult: null });
-      const majorOrder = this.data.majorResult.topIndex + 1;
+      const majorResult = this.data.majorResult;
+      if (!majorResult) {
+        wx.showToast({ title: '请先完成大类问卷', icon: 'none' });
+        return;
+      }
+      const majorOrder = majorResult.topIndex + 1;
       wx.navigateTo({ url: `/pages/quiz/quiz?type=medium&majorOrder=${majorOrder}` });
     } else if (dialogType === 'loadMajor') {
       wx.navigateTo({ url: '/pages/quiz/quiz?type=major&loadCache=1' });
@@ -134,5 +140,20 @@ Page({
 
   onRetakeCancel() {
     this.setData({ dialogVisible: false, dialogType: '' });
+  },
+
+  goToMinorJobs() {
+    const mediumResult = wx.getStorageSync('mediumQuizResult') || null;
+    if (!mediumResult) {
+      wx.showToast({
+        title: '请先完成中类测评',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/minor-jobs/minor-jobs?mediumCategory=${encodeURIComponent(mediumResult.topCategory)}`
+    });
   }
 })

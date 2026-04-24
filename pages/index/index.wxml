@@ -59,7 +59,7 @@
     </view>
   </view>
 
-  <view class="entry-card">
+  <view class="entry-card" bindtap="goToMinorJobs">
     <view class="entry-info">
       <view class="entry-name">查看小类职业</view>
       <view class="entry-desc">浏览岗位描述</view>

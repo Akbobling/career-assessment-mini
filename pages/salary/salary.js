@@ -49,26 +49,23 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 });
     }
-    const filterCache = wx.getStorageSync('salaryFilterCache') || {};
-    if (filterCache.dirty) {
+    const filterCache = wx.getStorageSync('salaryFilterCache');
+    if (filterCache) {
       this.setData({
         filterSchool: filterCache.filterSchool || this.data.filterSchool,
         filterMajor: filterCache.filterMajor || this.data.filterMajor,
         filterRegion: filterCache.filterRegion || this.data.filterRegion
       }, () => {
         this._updateFilterCount();
+        wx.removeStorageSync('salaryFilterCache');
       });
     }
-    // Check if popup should be restored
     const restorePopup = wx.getStorageSync('salaryFilterPopupRestore');
     if (restorePopup) {
       wx.nextTick(() => {
         this.setData({ filterVisible: true });
         wx.removeStorageSync('salaryFilterPopupRestore');
-        wx.removeStorageSync('salaryFilterCache');
       });
-    } else if (filterCache.dirty) {
-      wx.removeStorageSync('salaryFilterCache');
     }
   },
 
@@ -88,6 +85,9 @@ Page({
     try {
       let query = {};
       const { activeTab, filterType, filterEdu, filterSchool, filterMajor, filterGradYear, filterRegion } = this.data;
+
+      // 只显示已通过的爆料
+      query.status = 'approved';
 
       if (activeTab === 'school') {
         const userInfo = wx.getStorageSync('userInfo') || {};
@@ -205,34 +205,15 @@ Page({
     wx.navigateTo({ url: '/pages/publish/publish' });
   },
 
+  goToDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/salary-detail/salary-detail?id=${id}` });
+  },
+
   onBackToTop() {
     wx.pageScrollTo({
       scrollTop: 0,
       duration: 300
     });
-  },
-
-  onLike(e) {
-    const id = e.currentTarget.dataset.id;
-    const list = this.data.salaryList;
-    const index = list.findIndex(item => item._id === id);
-    if (index > -1) {
-      const key = `salaryList[${index}].likes`;
-      this.setData({ [key]: list[index].likes + 1 });
-    }
-  },
-
-  onCollect(e) {
-    const id = e.currentTarget.dataset.id;
-    const list = this.data.salaryList;
-    const index = list.findIndex(item => item._id === id);
-    if (index > -1) {
-      const key = `salaryList[${index}].collects`;
-      this.setData({ [key]: list[index].collects + 1 });
-    }
-  },
-
-  onShare(e) {
-    wx.showShareMenu({ withShareTicket: true });
   }
 })

@@ -42,6 +42,10 @@ function computeResult(answers, answerTimes, categories, fullCategories, itemsPe
   Object.keys(answers).forEach(key => {
     const parts = key.split('-');
     const groupIndex = parseInt(parts[0]) - 1;
+    if (isNaN(groupIndex) || groupIndex < 0 || groupIndex >= labels.length) {
+      console.error(`Invalid answer key format: ${key}`);
+      return;
+    }
     const value = answers[key];
     groupScores[groupIndex] += value;
     groupValues[groupIndex].push(value);

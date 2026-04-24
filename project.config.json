@@ -1,7 +1,8 @@
 {
   "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
-  "libVersion": "trial",
+  "libVersion": "2.24.0",
+  "cloudbaseEnvId": "cloud1-2gly2wfnd42ab7f8",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -40,5 +41,4 @@
   "appid": "wxa8672e8e3dcf0873",
   "simulatorPluginLibVersion": {},
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
-
 }

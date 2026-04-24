@@ -25,10 +25,6 @@
     </view>
   </view>
 
-  <!-- DEBUG-START: 后门按钮，上线前移除 -->
-  <view class="debug-btn" bindtap="handleDebugFill">DEBUG</view>
-  <!-- DEBUG-END -->
-
   <view class="footer">
     <button class="action-btn" bindtap="goPrev" disabled="{{currentIndex === 0}}">上一题</button>
     <button

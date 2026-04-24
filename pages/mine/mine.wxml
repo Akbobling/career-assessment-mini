@@ -1,9 +1,12 @@
 <view class="mine-container">
   <view class="user-header">
-    <t-avatar size="160rpx" image="{{userInfo.avatar}}" shape="circle" />
+    <t-avatar wx:if="{{userInfo.isAvatarImage}}" size="160rpx" image="{{userInfo.avatar}}" shape="circle" />
+    <view wx:else class="text-avatar text-avatar-large">
+      <text>{{userInfo.avatar}}</text>
+    </view>
     <text class="user-name">{{userInfo.name || '未设置'}}</text>
   </view>
-  
+
   <view class="menu-section">
     <t-cell-group theme="card">
       <t-cell title="基本信息" arrow hover bindtap="goToProfile" t-class-left-icon="cell-icon">
@@ -12,10 +15,10 @@
       <t-cell title="我的报告" arrow hover bindtap="goToReports">
         <t-icon slot="left-icon" name="file-icon" size="48rpx" />
       </t-cell>
-      <t-cell title="我的爆料" arrow hover>
+      <t-cell title="我的爆料" arrow hover bindtap="goToMyReports">
         <t-icon slot="left-icon" name="loudspeaker" size="48rpx" />
       </t-cell>
-      <t-cell title="我的收藏" arrow hover>
+      <t-cell title="我的收藏" arrow hover bindtap="goToMyReports">
         <t-icon slot="left-icon" name="star" size="48rpx" />
       </t-cell>
       <t-cell title="免责声明" arrow hover>

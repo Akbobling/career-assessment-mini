@@ -56,9 +56,43 @@
       <!-- 地区字段 -->
       <view class="form-item">
         <text class="form-label normal"><text class="required-star">*</text>地区</text>
-        <view class="select-box" bindtap="showRegionPicker">
+        <view class="select-box" bindtap="goToSearchRegion">
           <text class="select-text">{{formData.region || '请选择地区'}}</text>
-          <t-icon name="chevron-down" size="20px" color="#3B82F6" />
+          <t-icon name="chevron-right" size="20px" color="#3B82F6" />
+        </view>
+      </view>
+
+      <!-- 年薪字段（校招/社招显示） -->
+      <view class="form-item" wx:if="{{formData.type === '校招' || formData.type === '社招'}}">
+        <text class="form-label normal"><text class="required-star">*</text>年薪（万）</text>
+        <view class="salary-input-container">
+          <input class="salary-input" placeholder="请输入年薪" placeholder-class="placeholder-text" value="{{formData.annualSalary}}" bindinput="inputAnnualSalary" type="digit" />
+          <text class="salary-unit">万/年</text>
+        </view>
+        <view class="salary-type-buttons">
+          <view class="salary-type-btn {{formData.salaryType === '税前' ? 'active' : ''}}" bindtap="selectSalaryType" data-type="税前">
+            <text>税前</text>
+          </view>
+          <view class="salary-type-btn {{formData.salaryType === '税后' ? 'active' : ''}}" bindtap="selectSalaryType" data-type="税后">
+            <text>税后</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 日薪字段（实习显示） -->
+      <view class="form-item" wx:if="{{formData.type === '实习'}}">
+        <text class="form-label normal"><text class="required-star">*</text>日薪（元）</text>
+        <view class="salary-input-container">
+          <input class="salary-input" placeholder="请输入日薪" placeholder-class="placeholder-text" value="{{formData.dailySalary}}" bindinput="inputDailySalary" type="digit" />
+          <text class="salary-unit">元/天</text>
+        </view>
+        <view class="salary-type-buttons">
+          <view class="salary-type-btn {{formData.salaryType === '税前' ? 'active' : ''}}" bindtap="selectSalaryType" data-type="税前">
+            <text>税前</text>
+          </view>
+          <view class="salary-type-btn {{formData.salaryType === '税后' ? 'active' : ''}}" bindtap="selectSalaryType" data-type="税后">
+            <text>税后</text>
+          </view>
         </view>
       </view>
 
@@ -94,12 +128,19 @@
   </view>
 
   <!-- 行业选择器 -->
-  <t-popup visible="{{industryPickerVisible}}" placement="bottom" bind:visible-change="industryPickerVisibleChange">
-    <t-picker columns="{{industryColumns}}" bind:change="industryChange" />
-  </t-popup>
+  <t-picker
+    visible="{{industryPickerVisible}}"
+    value="{{industryValue}}"
+    title="选择行业"
+    cancelBtn="取消"
+    confirmBtn="确认"
+    bindchange="industryChange"
+    bindcancel="onIndustryCancel"
+    bind:visible-change="industryPickerVisibleChange"
+  >
+    <t-picker-item options="{{industryOptions}}"></t-picker-item>
+  </t-picker>
 
   <!-- 地区选择器 -->
-  <t-popup visible="{{regionPickerVisible}}" placement="bottom" bind:visible-change="regionPickerVisibleChange">
-    <t-picker columns="{{regionColumns}}" bind:change="regionChange" />
-  </t-popup>
+
 </view>

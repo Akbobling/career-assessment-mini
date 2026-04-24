@@ -1,0 +1,43 @@
+<view class="minor-jobs-container">
+  <view class="header">
+    <text class="category-title">{{mediumCategory}}</text>
+    <text class="category-subtitle">小类职业岗位描述</text>
+  </view>
+
+  <view class="search-section">
+    <t-search
+      placeholder="搜索岗位名称或描述"
+      value="{{searchKeyword}}"
+      bind:change="onSearch"
+      bind:submit="onSearch"
+      bind:clear="onSearch"
+    />
+  </view>
+
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40rpx" text="加载中..." />
+  </view>
+
+  <view class="empty-wrap" wx:if="{{!loading && getFilteredJobs().length === 0}}">
+    <t-empty icon="file-search" description="暂无岗位数据" />
+  </view>
+
+  <view class="jobs-list" wx:if="{{!loading && getFilteredJobs().length > 0}}">
+    <view class="job-card" wx:for="{{getFilteredJobs()}}" wx:key="_id">
+      <view class="job-header">
+        <text class="job-name">{{item.jobName}}</text>
+        <t-icon name="chevron-right" size="16px" color="#9CA3AF" />
+      </view>
+      <view class="job-desc">
+        <text class="desc-text">{{item.description}}</text>
+      </view>
+      <view class="job-meta" wx:if="{{item.abilities}}">
+        <view class="meta-tag" wx:for="{{item.abilities}}" wx:key="*this" wx:for-item="ability">
+          <text class="tag-text">{{ability}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

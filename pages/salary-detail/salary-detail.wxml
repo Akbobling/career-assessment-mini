@@ -1,0 +1,154 @@
+<view class="salary-detail-container">
+
+  <!-- 加载状态 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <t-loading theme="circular" size="40rpx" text="加载中..." />
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-wrap" wx:if="{{!loading && !report}}">
+    <t-empty icon="file-search" description="内容不存在" />
+  </view>
+
+  <!-- 详情内容 -->
+  <view class="detail-content" wx:if="{{report && !loading}}">
+
+    <!-- 用户信息 -->
+    <view class="user-header">
+      <image class="user-avatar" src="{{report.avatarUrl}}" mode="aspectFill" wx:if="{{report.avatarUrl}}" />
+      <view class="user-avatar user-avatar-default" wx:else>
+        <t-icon name="user" size="20px" color="#FFFFFF" />
+      </view>
+      <view class="user-info">
+        <view class="user-id-row">
+          <text class="user-id-num">{{report.userName}}</text>
+          <text class="user-edu">{{report.education === '本科' ? '本' : report.education === '硕士' ? '硕' : report.education === '博士' ? '博' : report.education}}</text>
+        </view>
+        <text class="user-school">{{report.school}} | {{report.gradYear}}毕业</text>
+        <view class="user-major" wx:if="{{report.major}}">
+          <t-tag theme="light" variant="light" size="small" class="user-major-tag">
+            {{report.major}}
+          </t-tag>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="native-divider"></view>
+
+    <!-- 爆料内容 -->
+    <view class="report-card">
+      <view class="card-section">
+        <view class="section-label">类型</view>
+        <text class="section-value">{{report.tag}}</text>
+      </view>
+      <view class="card-section">
+        <view class="section-label">地区</view>
+        <text class="section-value">{{report.location}}</text>
+      </view>
+      <view class="card-section">
+        <view class="section-label">行业</view>
+        <text class="section-value">{{report.industry}}</text>
+      </view>
+      <view class="card-section">
+        <view class="section-label">公司</view>
+        <text class="section-value">{{report.company}}</text>
+      </view>
+      <view class="card-section">
+        <view class="section-label">岗位</view>
+        <text class="section-value">{{report.position}}</text>
+      </view>
+      <view class="card-section" wx:if="{{report.annualSalary}}">
+        <view class="section-label">年薪</view>
+        <view class="section-value-with-tag">
+          <text class="section-value salary-highlight">{{report.annualSalary}} 万元</text>
+          <view class="salary-type-tag">{{report.salaryType}}</view>
+        </view>
+      </view>
+      <view class="card-section" wx:if="{{report.dailySalary}}">
+        <view class="section-label">日薪</view>
+        <view class="section-value-with-tag">
+          <text class="section-value salary-highlight">{{report.dailySalary}} 元/天</text>
+          <view class="salary-type-tag">{{report.salaryType}}</view>
+        </view>
+      </view>
+      <view class="card-section" wx:if="{{report.salary}}">
+        <view class="section-label">薪资描述</view>
+        <text class="section-value salary-desc-text">{{report.salary}}</text>
+      </view>
+      <view class="card-section" wx:if="{{report.desc}}">
+        <text class="section-value desc-text">{{report.desc}}</text>
+      </view>
+    </view>
+
+
+    <!-- 时间戳 -->
+    <view class="timestamp-section">
+      <t-icon name="time" size="16px" color="#9CA3AF" />
+      <text class="timestamp-text">{{report.formattedTimestamp}}</text>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="native-divider"></view>
+
+  </view>
+
+  <!-- 评论区 -->
+  <view class="comments-section" wx:if="{{report && !loading}}">
+    <view class="comments-title">评论 ({{report.comments}})</view>
+
+    <!-- 评论列表 -->
+    <view class="comments-list">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="_id">
+        <view class="comment-avatar">
+          <t-icon name="user" size="16px" color="#FFFFFF" />
+        </view>
+        <view class="comment-content">
+          <view class="comment-header">
+            <text class="comment-user">{{item.userName}}</text>
+            <text class="comment-time">{{item.timestamp}}</text>
+          </view>
+          <text class="comment-text">{{item.content}}</text>
+          <view class="comment-reply" wx:if="{{item.replyTo}}" bindtap="onReplyComment" data-comment="{{item}}">
+            <text class="reply-text">回复</text>
+          </view>
+        </view>
+      </view>
+      <view class="empty-comments" wx:if="{{comments.length === 0 && !commentLoading}}">
+        <t-empty icon="chat" description="暂无评论" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar" wx:if="{{report && !loading}}">
+    <view class="comment-input-wrapper">
+      <view class="reply-hint" wx:if="{{replyTo}}">
+        <text class="reply-hint-text">回复：{{replyTo.userName}}</text>
+        <t-icon name="close" size="16px" color="#9CA3AF" bindtap="onCancelReply" />
+      </view>
+      <t-input
+        placeholder="{{replyTo ? '回复评论...' : '说点什么...'}}"
+        value="{{commentInput}}"
+        bind:change="onCommentInput"
+        class="comment-input"
+      />
+    </view>
+    <view class="action-buttons">
+      <view class="bar-action send-action" bindtap="submitComment">
+        <t-icon name="send" size="20px" color="#3B82F6" />
+      </view>
+      <view class="bar-action" bindtap="onLike">
+        <t-icon name="thumb-up" size="20px" color="{{isLiked ? '#3B82F6' : '#9CA3AF'}}" />
+      </view>
+      <view class="bar-action" bindtap="onCollect">
+        <t-icon name="star" size="20px" color="{{isCollected ? '#F59E0B' : '#9CA3AF'}}" />
+      </view>
+      <view class="bar-action" bindtap="onShare">
+        <t-icon name="share" size="20px" color="#9CA3AF" />
+      </view>
+    </view>
+  </view>
+</view>
+
+<t-toast id="t-toast" />

@@ -1,6 +1,6 @@
 .page-bg {
   min-height: 100vh;
-  background-color: #F0F9FF;
+  background-color: #F0F4F8;
   padding-bottom: 200rpx;
 }
 
@@ -79,11 +79,15 @@
   width: 80rpx;
   height: 80rpx;
   border-radius: 50%;
-  background-color: #3B82F6;
+  background: #F3F4F6;
+  flex-shrink: 0;
+}
+
+.user-avatar-default {
+  background: #3B82F6;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .user-info {
@@ -177,6 +181,9 @@
   display: flex;
   align-items: baseline;
   gap: 12rpx;
+  background-color: #F0F4F8;
+  border-radius: 12rpx;
+  padding: 16rpx;
 }
 
 .desc-text {

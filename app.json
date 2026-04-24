@@ -5,14 +5,17 @@
     "pages/result/result",
     "pages/reports/reports",
     "pages/salary/salary",
+    "pages/salary-detail/salary-detail",
     "pages/mine/mine",
+    "pages/my-reports/my-reports",
     "pages/profile/profile",
     "pages/logs/logs",
     "pages/edit-profile/edit-profile",
     "pages/publish/publish",
     "pages/search-school/search-school",
     "pages/search-major/search-major",
-    "pages/search-region/search-region"
+    "pages/search-region/search-region",
+    "pages/minor-jobs/minor-jobs"
   ],
   "window": {
     "navigationBarTextStyle": "black",

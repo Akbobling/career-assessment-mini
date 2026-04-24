@@ -1,13 +1,21 @@
 <view class="profile-container">
   <t-cell-group>
     <t-cell title="头像" hover bindtap="editAvatar">
-      <t-avatar slot="note" size="80rpx" image="{{userInfo.avatar}}" />
+      <t-avatar wx:if="{{userInfo.isAvatarImage}}" slot="note" size="80rpx" image="{{userInfo.avatar}}" />
+      <view wx:else slot="note" class="text-avatar text-avatar-small">
+        <text>{{userInfo.avatar}}</text>
+      </view>
     </t-cell>
-    <t-cell title="名字" note="{{userInfo.name || '未设置'}}" hover bindtap="editName" />
+    <t-cell title="昵称" note="{{userInfo.name || '未设置'}}" hover bindtap="editName" />
     <t-cell title="性别" note="{{userInfo.gender || '未设置'}}" hover bindtap="editGender" />
     <t-cell title="最高学历" note="{{userInfo.education || '未设置'}}" hover bindtap="editEducation" />
     <t-cell title="学校" note="{{userInfo.school || '未设置'}}" hover bindtap="editSchool" />
+    <t-cell title="专业" note="{{userInfo.major || '未设置'}}" hover bindtap="editMajor" />
+    <t-cell title="毕业年份" note="{{userInfo.gradYear || '未设置'}}" hover bindtap="editGradYear" />
   </t-cell-group>
+
+  <view class="tip-text">完善全部信息，及时了解你所属院校圈的动态哦~</view>
+
   <t-picker
     visible="{{educationVisible}}"
     value="{{educationValue}}"
@@ -18,6 +26,18 @@
     bindcancel="onEducationCancel"
   >
     <t-picker-item options="{{educationOptions}}"></t-picker-item>
+  </t-picker>
+
+  <t-picker
+    visible="{{gradYearVisible}}"
+    value="{{gradYearValue}}"
+    title="选择毕业年份"
+    cancelBtn="取消"
+    confirmBtn="确认"
+    bindchange="onGradYearChange"
+    bindcancel="onGradYearCancel"
+  >
+    <t-picker-item options="{{gradYearOptions}}"></t-picker-item>
   </t-picker>
   <t-toast id="t-toast" />
 </view>
