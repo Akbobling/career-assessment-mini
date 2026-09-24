@@ -1,0 +1,39 @@
+<view class="page-bg">
+  <view class="tip">请上传学生证的人像页和注册页，提交后将进行人工审核</view>
+
+  <!-- 人像页上传框 -->
+  <view class="upload-wrap">
+    <view class="upload-label">人像页</view>
+    <view class="upload-box" bindtap="chooseImage" data-type="portrait" wx:if="{{!portraitImage}}">
+      <t-icon name="add" size="48rpx" color="#9CA3AF" />
+      <text class="upload-text">点击上传人像页</text>
+    </view>
+    <view class="preview-box" wx:if="{{portraitImage}}" bindtap="previewImage" data-type="portrait">
+      <image src="{{portraitImage}}" mode="aspectFill" class="preview-img" />
+      <view class="preview-mask">
+        <t-icon name="eye" size="32rpx" color="#FFFFFF" />
+        <text class="preview-text">点击预览</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 注册页上传框 -->
+  <view class="upload-wrap">
+    <view class="upload-label">注册页</view>
+    <view class="upload-box" bindtap="chooseImage" data-type="register" wx:if="{{!registerImage}}">
+      <t-icon name="add" size="48rpx" color="#9CA3AF" />
+      <text class="upload-text">点击上传注册页</text>
+    </view>
+    <view class="preview-box" wx:if="{{registerImage}}" bindtap="previewImage" data-type="register">
+      <image src="{{registerImage}}" mode="aspectFill" class="preview-img" />
+      <view class="preview-mask">
+        <t-icon name="eye" size="32rpx" color="#FFFFFF" />
+        <text class="preview-text">点击预览</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="submit-wrap">
+    <t-button theme="primary" size="large" block bindtap="onSubmit" loading="{{submitting}}">提交审核</t-button>
+  </view>
+</view>

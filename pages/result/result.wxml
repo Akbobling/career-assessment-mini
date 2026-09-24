@@ -2,13 +2,14 @@
   <view class="result-header">
     <view class="result-label">您的结果是</view>
     <view class="result-name">{{topCategory}}</view>
+    <view class="result-bank" wx:if="{{quizType === 'minor' && bankTitle}}">{{bankTitle}} · 细类问卷</view>
   </view>
 
   <view class="chart-card">
-    <view class="chart-title">{{quizType === 'major' ? '各大类得分对比' : '各中类得分对比'}}</view>
+    <view class="chart-title">{{quizType === 'major' ? '各大类得分对比' : quizType === 'minor' ? '各细类得分对比' : '各中类得分对比'}}</view>
     <view class="chart-body">
       <view class="bar-row" wx:for="{{chartData}}" wx:key="label">
-        <view class="bar-label">{{item.label}}</view>
+        <view class="bar-label">{{item.shortLabel}}</view>
         <view class="bar-track">
           <view class="bar-fill {{item.isTop ? 'bar-fill-top' : ''}}" style="width: {{item.percent}}%;"></view>
         </view>

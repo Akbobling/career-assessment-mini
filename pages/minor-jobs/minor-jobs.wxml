@@ -1,43 +1,83 @@
-<view class="minor-jobs-container">
+<view class="page-bg">
   <view class="header">
-    <text class="category-title">{{mediumCategory}}</text>
-    <text class="category-subtitle">小类职业岗位描述</text>
+    <text class="header-title">细类职业适配度问卷</text>
+    <text class="header-subtitle">根据中类测评结果选择问卷，锁定具体职业方向</text>
+    <view class="medium-result" wx:if="{{mediumTopCategory}}">
+      <t-icon name="check-circle-filled" size="16px" color="#BFDBFE" />
+      <text class="medium-result-text">中类结果：{{mediumTopCategory}}</text>
+    </view>
   </view>
 
-  <view class="search-section">
-    <t-search
-      placeholder="搜索岗位名称或描述"
-      value="{{searchKeyword}}"
-      bind:change="onSearch"
-      bind:submit="onSearch"
-      bind:clear="onSearch"
-    />
-  </view>
-
-  <view class="loading-wrap" wx:if="{{loading}}">
-    <t-loading theme="circular" size="40rpx" text="加载中..." />
-  </view>
-
-  <view class="empty-wrap" wx:if="{{!loading && getFilteredJobs().length === 0}}">
-    <t-empty icon="file-search" description="暂无岗位数据" />
-  </view>
-
-  <view class="jobs-list" wx:if="{{!loading && getFilteredJobs().length > 0}}">
-    <view class="job-card" wx:for="{{getFilteredJobs()}}" wx:key="_id">
-      <view class="job-header">
-        <text class="job-name">{{item.jobName}}</text>
-        <t-icon name="chevron-right" size="16px" color="#9CA3AF" />
-      </view>
-      <view class="job-desc">
-        <text class="desc-text">{{item.description}}</text>
-      </view>
-      <view class="job-meta" wx:if="{{item.abilities}}">
-        <view class="meta-tag" wx:for="{{item.abilities}}" wx:key="*this" wx:for-item="ability">
-          <text class="tag-text">{{ability}}</text>
+  <!-- 推荐问卷 -->
+  <view class="section" wx:if="{{recommendedBanks.length > 0}}">
+    <view class="section-title">为你推荐</view>
+    <view
+      class="bank-card"
+      wx:for="{{recommendedBanks}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onBankTap"
+    >
+      <view class="bank-main">
+        <view class="bank-title-row">
+          <text class="bank-title">{{item.title}}</text>
+          <view class="bank-badge" wx:if="{{item.hasProgress}}">继续作答</view>
+          <view class="bank-badge bank-badge-done" wx:elif="{{item.completed}}">已完成</view>
         </view>
+        <view class="bank-meta">
+          <text class="meta-text">{{item.categoryCount}}个细类 · 共{{item.questionCount}}题</text>
+          <text class="bank-code">{{item.key}}</text>
+        </view>
+      </view>
+      <view class="bank-actions">
+        <view class="result-link" wx:if="{{item.completed}}" catchtap="viewResult" data-key="{{item.key}}">查看结果</view>
+        <t-icon name="chevron-right" size="20px" color="#9CA3AF" />
       </view>
     </view>
   </view>
-</view>
 
-<t-toast id="t-toast" />
+  <view class="section" wx:if="{{majorOrder && recommendedBanks.length === 0}}">
+    <view class="empty-tip">该中类下暂无细类问卷，可在下方选择其他方向</view>
+  </view>
+
+  <!-- 全部问卷 -->
+  <view class="section" wx:for="{{otherGroups}}" wx:key="major" wx:for-item="group">
+    <view class="section-title">{{group.majorLabel}} · {{group.majorName}}</view>
+    <view
+      class="bank-card"
+      wx:for="{{group.banks}}"
+      wx:key="key"
+      wx:for-item="bank"
+      data-key="{{bank.key}}"
+      bindtap="onBankTap"
+    >
+      <view class="bank-main">
+        <view class="bank-title-row">
+          <text class="bank-title">{{bank.title}}</text>
+          <view class="bank-badge" wx:if="{{bank.hasProgress}}">继续作答</view>
+          <view class="bank-badge bank-badge-done" wx:elif="{{bank.completed}}">已完成</view>
+        </view>
+        <view class="bank-meta">
+          <text class="meta-text">{{bank.categoryCount}}个细类 · 共{{bank.questionCount}}题</text>
+          <text class="bank-code">{{bank.key}}</text>
+        </view>
+      </view>
+      <view class="bank-actions">
+        <view class="result-link" wx:if="{{bank.completed}}" catchtap="viewResult" data-key="{{bank.key}}">查看结果</view>
+        <t-icon name="chevron-right" size="20px" color="#9CA3AF" />
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+
+  <t-dialog
+    visible="{{dialogVisible}}"
+    title="提示"
+    content="检测到该问卷上次未完成的作答，是否继续？"
+    confirm-btn="继续"
+    cancel-btn="重新开始"
+    bindconfirm="onDialogConfirm"
+    bindcancel="onDialogCancel"
+  />
+</view>

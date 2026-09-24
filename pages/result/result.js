@@ -1,4 +1,5 @@
 const { computeResult, CATEGORIES, FULL_CATEGORIES } = require('../../utils/scoring.js');
+const { getCollectionName, getAllBanks } = require('../../utils/minor-banks.js');
 const db = wx.cloud.database();
 
 Page({
@@ -6,7 +7,8 @@ Page({
     topCategory: '',
     chartData: [],
     quizType: 'major',
-    majorOrder: 0
+    majorOrder: 0,
+    bankTitle: ''
   },
 
   async onLoad(options) {
@@ -27,9 +29,15 @@ Page({
       }
     } else if (options.from === 'storage') {
       const type = options.type || 'major';
-      const saved = type === 'major'
-        ? wx.getStorageSync('majorQuizResult')
-        : wx.getStorageSync('mediumQuizResult');
+      let saved = null;
+      if (type === 'major') {
+        saved = wx.getStorageSync('majorQuizResult');
+      } else if (type === 'medium') {
+        saved = wx.getStorageSync('mediumQuizResult');
+      } else if (type === 'minor') {
+        const minorMap = wx.getStorageSync('minorQuizResults') || {};
+        saved = minorMap[options.bank] || null;
+      }
       if (saved) {
         resultData = saved;
       } else {
@@ -56,12 +64,37 @@ Page({
         const numChar = ['一','二','三','四','五','六','七'][majorOrder - 1] || '';
         fullCats = questions.map(q => `第${numChar}大类·${q.category}`);
         perGroup = questions.length > 0 ? (questions[0].items || []).length : 6;
+      } else if (quizType === 'minor') {
+        const mediumCode = options.mediumCode || '';
+        const minorCode = options.minorCode || '';
+        const bankKey = options.bank || `${majorOrder}-${mediumCode}-${minorCode}`;
+        const minorRes = await db.collection(getCollectionName(bankKey))
+          .orderBy('order', 'asc')
+          .limit(100)
+          .get();
+        const questions = minorRes.data;
+        cats = questions.map(q => q.category);
+        fullCats = cats;
+        perGroup = questions.length > 0 ? (questions[0].items || []).length : 4;
       }
 
+      // 三种问卷类型统一在此计算结果
       resultData = computeResult(answers, answerTimes, cats, fullCats, perGroup);
-      resultData.timestamp = Date.now();
       resultData.quizType = quizType;
       resultData.majorOrder = majorOrder;
+      resultData.timestamp = Date.now();
+
+      // 细类问卷附加题库信息
+      if (quizType === 'minor') {
+        const mediumCode = options.mediumCode || '';
+        const minorCode = options.minorCode || '';
+        const bankKey = options.bank || `${majorOrder}-${mediumCode}-${minorCode}`;
+        resultData.mediumCode = mediumCode;
+        resultData.minorCode = minorCode;
+        resultData.bankKey = bankKey;
+        const bankConfig = getAllBanks().find(b => b.key === bankKey);
+        resultData.bankTitle = bankConfig ? bankConfig.title : '';
+      }
 
       this._saveReport(resultData);
     }
@@ -69,24 +102,40 @@ Page({
     const quizType = resultData.quizType || 'major';
     const majorOrder = resultData.majorOrder || 0;
 
+    // 条形图标签去掉括号内容（如「科学型（科学研究人员）」->「科学型」），便于阅读
+    const chartData = (resultData.chartData || []).map(item => ({
+      ...item,
+      shortLabel: (item.label || '').replace(/[（(][^（）()]*[）)]/g, '')
+    }));
+
     this.setData({
       topCategory: resultData.topCategory,
-      chartData: resultData.chartData,
+      chartData,
       quizType,
-      majorOrder
+      majorOrder,
+      bankTitle: resultData.bankTitle || ''
     });
   },
 
   async _saveReport(resultData) {
     try {
-      const quizName = resultData.quizType === 'major'
-        ? '大类职业适配度问卷'
-        : `第${['一','二','三','四','五','六','七'][resultData.majorOrder - 1] || ''}大类·中类职业适配度问卷`;
+      let quizName;
+      if (resultData.quizType === 'major') {
+        quizName = '大类职业适配度问卷';
+      } else if (resultData.quizType === 'minor') {
+        quizName = `细类职业适配度问卷·${resultData.bankTitle || resultData.bankKey || ''}`;
+      } else {
+        quizName = `第${['一','二','三','四','五','六','七'][resultData.majorOrder - 1] || ''}大类·中类职业适配度问卷`;
+      }
 
       const report = {
         quizName,
         quizType: resultData.quizType,
         majorOrder: resultData.majorOrder,
+        mediumCode: resultData.mediumCode || '',
+        minorCode: resultData.minorCode || '',
+        bankKey: resultData.bankKey || '',
+        bankTitle: resultData.bankTitle || '',
         topCategory: resultData.topCategory,
         topIndex: resultData.topIndex,
         chartData: resultData.chartData,

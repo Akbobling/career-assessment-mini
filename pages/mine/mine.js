@@ -3,10 +3,12 @@ Page({
     userInfo: {
       avatar: '',
       name: ''
-    }
+    },
+    verifyStatus: ''
   },
   onLoad() {
     this.getUserInfo();
+    this.loadVerifyStatus();
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -15,6 +17,15 @@ Page({
       });
     }
     this.getUserInfo();
+    this.loadVerifyStatus();
+  },
+  loadVerifyStatus() {
+    const status = wx.getStorageSync('studentVerifyStatus') || '';
+    const statusText = status === 'pending' ? '审核中'
+      : status === 'approved' ? '已认证'
+      : status === 'rejected' ? '已驳回'
+      : '';
+    this.setData({ verifyStatus: statusText });
   },
   getUserInfo() {
     const userInfo = wx.getStorageSync('userInfo') || {};
@@ -52,6 +63,11 @@ Page({
   goToMyReports() {
     wx.navigateTo({
       url: '/pages/my-reports/my-reports'
+    });
+  },
+  goToStudentVerify() {
+    wx.navigateTo({
+      url: '/pages/student-verify/student-verify'
     });
   }
 })

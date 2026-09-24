@@ -1,93 +1,145 @@
-.minor-jobs-container {
+.page-bg {
   min-height: 100vh;
-  background: #F5F7FA;
-  padding-bottom: 32rpx;
+  background-color: #F0F4F8;
+  padding-bottom: 40rpx;
 }
 
 .header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 48rpx 32rpx 32rpx;
-  color: #FFFFFF;
-}
-
-.category-title {
-  display: block;
-  font-size: 36rpx;
-  font-weight: 600;
-  margin-bottom: 8rpx;
-}
-
-.category-subtitle {
-  display: block;
-  font-size: 24rpx;
-  opacity: 0.9;
-}
-
-.search-section {
-  padding: 24rpx 32rpx;
-}
-
-.loading-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 80rpx 0;
-}
-
-.empty-wrap {
-  padding: 80rpx 32rpx;
-}
-
-.jobs-list {
-  padding: 0 32rpx;
+  background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+  padding: 48rpx 32rpx 40rpx;
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
-}
-
-.job-card {
-  background: #FFFFFF;
-  border-radius: 16rpx;
-  padding: 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
-}
-
-.job-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16rpx;
-}
-
-.job-name {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #1F2937;
-}
-
-.job-desc {
-  margin-bottom: 16rpx;
-}
-
-.desc-text {
-  font-size: 28rpx;
-  color: #4B5563;
-  line-height: 1.6;
-}
-
-.job-meta {
-  display: flex;
-  flex-wrap: wrap;
   gap: 12rpx;
 }
 
-.meta-tag {
-  background: #F3F4F6;
-  padding: 8rpx 16rpx;
-  border-radius: 8rpx;
+.header-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #FFFFFF;
 }
 
-.tag-text {
+.header-subtitle {
+  font-size: 26rpx;
+  color: #DBEAFE;
+  line-height: 1.5;
+}
+
+.medium-result {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999rpx;
+  padding: 8rpx 20rpx;
+  align-self: flex-start;
+}
+
+.medium-result-text {
+  font-size: 24rpx;
+  color: #FFFFFF;
+}
+
+.section {
+  padding: 28rpx 24rpx 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1E3A8A;
+}
+
+.bank-card {
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 28rpx 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.bank-card:active {
+  opacity: 0.8;
+}
+
+.bank-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  min-width: 0;
+}
+
+.bank-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.bank-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #111827;
+}
+
+.bank-badge {
+  font-size: 22rpx;
+  color: #1E3A8A;
+  background: #DBEAFE;
+  border-radius: 999rpx;
+  padding: 4rpx 14rpx;
+  flex-shrink: 0;
+}
+
+.bank-badge-done {
+  color: #166534;
+  background: #DCFCE7;
+}
+
+.bank-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.meta-text {
   font-size: 24rpx;
   color: #6B7280;
+}
+
+.bank-code {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.bank-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.result-link {
+  font-size: 24rpx;
+  color: #3B82F6;
+  padding: 8rpx 4rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #6B7280;
+  background: #FFFFFF;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  text-align: center;
+}
+
+.bottom-space {
+  height: 60rpx;
 }

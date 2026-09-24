@@ -59,10 +59,29 @@
     </view>
   </view>
 
-  <view class="entry-card" bindtap="goToMinorJobs">
+  <!-- 细类问卷入口 -->
+  <view class="entry-card" bindtap="{{mediumResult ? 'goToMinorJobs' : ''}}">
     <view class="entry-info">
-      <view class="entry-name">查看小类职业</view>
-      <view class="entry-desc">浏览岗位描述</view>
+      <view class="entry-name">细类职业适配度问卷</view>
+      <view class="entry-desc">选择方向，锁定具体职业</view>
+    </view>
+    <view class="entry-done" wx:if="{{minorResult}}">
+      <t-icon name="check-circle-filled" size="20px" color="#22C55E" />
+      <text class="entry-done-text">已完成</text>
+    </view>
+  </view>
+
+  <!-- 细类结果区 -->
+  <view class="result-section result-empty" wx:if="{{!mediumResult}}">
+    <view class="result-tip-empty">请先完成中类测评</view>
+  </view>
+  <view class="result-section" wx:if="{{minorResult}}">
+    <view class="result-tip">最近细类结果：{{minorResult.bankTitle}} · {{minorResult.topCategory}}</view>
+    <view class="result-actions">
+      <view class="result-btn" bindtap="viewMinorReport">
+        <t-icon name="file-copy" size="18px" color="#1E3A8A" />
+        <text class="result-btn-text">报告查看</text>
+      </view>
     </view>
   </view>
 </view>

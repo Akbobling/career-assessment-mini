@@ -15,7 +15,8 @@
     "pages/search-school/search-school",
     "pages/search-major/search-major",
     "pages/search-region/search-region",
-    "pages/minor-jobs/minor-jobs"
+    "pages/minor-jobs/minor-jobs",
+    "pages/student-verify/student-verify"
   ],
   "window": {
     "navigationBarTextStyle": "black",

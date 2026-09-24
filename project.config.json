@@ -2,7 +2,7 @@
   "cloudfunctionRoot": "cloudfunctions/",
   "compileType": "miniprogram",
   "libVersion": "2.24.0",
-  "cloudbaseEnvId": "cloud1-2gly2wfnd42ab7f8",
+  "cloudbaseEnvId": "cloud1-d9gf6ki2bb00f5d0c",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -38,7 +38,7 @@
     "tabIndent": "auto",
     "tabSize": 2
   },
-  "appid": "wxa8672e8e3dcf0873",
+  "appid": "wx27f933cbfe17f4d3",
   "simulatorPluginLibVersion": {},
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/"
 }

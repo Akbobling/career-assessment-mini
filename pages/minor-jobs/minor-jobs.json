@@ -1,12 +1,7 @@
 {
-  "navigationBarTitleText": "小类职业",
+  "navigationBarTitleText": "细类职业问卷",
   "usingComponents": {
     "t-icon": "tdesign-miniprogram/icon/icon",
-    "t-loading": "tdesign-miniprogram/loading/loading",
-    "t-empty": "tdesign-miniprogram/empty/empty",
-    "t-search": "tdesign-miniprogram/search/search",
-    "t-toast": "tdesign-miniprogram/toast/toast",
-    "t-cell": "tdesign-miniprogram/cell/cell",
-    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group"
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
   }
 }

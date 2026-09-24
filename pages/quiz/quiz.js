@@ -1,5 +1,6 @@
 const db = wx.cloud.database();
 const { computeResult } = require('../../utils/scoring.js');
+const { getCollectionName, getAllBanks } = require('../../utils/minor-banks.js');
 
 function flattenQuestions(questions) {
   const list = [];
@@ -22,6 +23,10 @@ Page({
     title: "职业测评",
     quizType: 'major',
     majorOrder: 0,
+    mediumCode: '',
+    minorCode: '',
+    bankKey: '',
+    bankTitle: '',
     options: [
       { value: 1, label: "完全不符合" },
       { value: 2, label: "不太符合" },
@@ -47,8 +52,27 @@ Page({
   async onLoad(options) {
     const quizType = options.type || 'major';
     const majorOrder = parseInt(options.majorOrder) || 0;
+    const mediumCode = options.mediumCode || '';
+    const minorCode = options.minorCode || '';
     const loadCache = options.loadCache === '1';
-    this.setData({ quizType, majorOrder, _submitted: false });
+
+    const bankKey = (quizType === 'minor') ? `${majorOrder}-${mediumCode}-${minorCode}` : '';
+    const bankConfig = quizType === 'minor'
+      ? getAllBanks().find(b => b.key === bankKey)
+      : null;
+    const bankTitle = bankConfig ? bankConfig.title : '';
+
+    this.setData({ quizType, majorOrder, mediumCode, minorCode, bankKey, bankTitle, _submitted: false });
+
+    if (quizType === 'minor' && !bankConfig) {
+      wx.showToast({ title: '问卷参数错误', icon: 'none' });
+      setTimeout(() => wx.navigateBack(), 1500);
+      return;
+    }
+
+    wx.setNavigationBarTitle({
+      title: quizType === 'minor' ? '细类职业适配度问卷' : '职业测评'
+    });
 
     wx.showLoading({ title: '题库加载中...', mask: true });
     try {
@@ -56,6 +80,12 @@ Page({
       if (quizType === 'major') {
         const res = await db.collection('MAJOR_CATEGORY_QUESTIONS')
           .orderBy('order', 'asc')
+          .get();
+        questions = res.data;
+      } else if (quizType === 'minor') {
+        const res = await db.collection(getCollectionName(bankKey))
+          .orderBy('order', 'asc')
+          .limit(100)
           .get();
         questions = res.data;
       } else {
@@ -66,8 +96,14 @@ Page({
       }
 
       const categories = questions.map(q => q.category);
-      const majorOrderIndex = Math.max(0, Math.min(majorOrder - 1, 6));
-      const fullCategories = questions.map(q => `第${['一','二','三','四','五','六','七'][majorOrderIndex] || ''}大类·${q.category}`);
+      let fullCategories;
+      if (quizType === 'minor') {
+        // 细类名称本身已具体，不再加大类前缀
+        fullCategories = categories;
+      } else {
+        const majorOrderIndex = Math.max(0, Math.min(majorOrder - 1, 6));
+        fullCategories = questions.map(q => `第${['一','二','三','四','五','六','七'][majorOrderIndex] || ''}大类·${q.category}`);
+      }
       const itemsPerCategory = questions.length > 0 ? (questions[0].items || []).length : 6;
 
       const allQuestions = flattenQuestions(questions);
@@ -117,10 +153,12 @@ Page({
   },
 
   _saveProgressLocal() {
-    const { quizType, majorOrder, answers, answerTimes, currentIndex } = this.data;
+    const { quizType, majorOrder, mediumCode, minorCode, answers, answerTimes, currentIndex } = this.data;
     const cacheData = {
       quizType,
       majorOrder,
+      mediumCode,
+      minorCode,
       answers,
       answerTimes,
       currentIndex,
@@ -148,7 +186,12 @@ Page({
     try {
       const localCache = wx.getStorageSync('quizProgressCache');
       const cache = localCache || null;
-      if (cache && cache.quizType === this.data.quizType && cache.majorOrder === this.data.majorOrder) {
+      const isSameQuiz = cache
+        && cache.quizType === this.data.quizType
+        && cache.majorOrder === this.data.majorOrder
+        && (this.data.quizType !== 'minor'
+          || (cache.mediumCode === this.data.mediumCode && cache.minorCode === this.data.minorCode));
+      if (isSameQuiz) {
         this.setData({
           answers: cache.answers || {},
           answerTimes: cache.answerTimes || {}
@@ -240,7 +283,11 @@ Page({
   },
 
   handleSubmit() {
-    const { total, answers, answerTimes, quizType, majorOrder, categories, fullCategories, itemsPerCategory } = this.data;
+    const {
+      total, answers, answerTimes, quizType, majorOrder,
+      categories, fullCategories, itemsPerCategory,
+      mediumCode, minorCode, bankKey, bankTitle
+    } = this.data;
     const answeredCount = Object.keys(answers).length;
     if (answeredCount < total) {
       wx.showToast({
@@ -260,16 +307,28 @@ Page({
     resultData.majorOrder = majorOrder;
     if (quizType === 'major') {
       wx.setStorageSync('majorQuizResult', resultData);
-    } else {
+    } else if (quizType === 'medium') {
       wx.setStorageSync('mediumQuizResult', resultData);
+    } else if (quizType === 'minor') {
+      resultData.mediumCode = mediumCode;
+      resultData.minorCode = minorCode;
+      resultData.bankKey = bankKey;
+      resultData.bankTitle = bankTitle;
+      // 每个细类问卷的结果按键存储，同时记录最近一次结果
+      const resultsMap = wx.getStorageSync('minorQuizResults') || {};
+      resultsMap[bankKey] = resultData;
+      wx.setStorageSync('minorQuizResults', resultsMap);
+      wx.setStorageSync('minorQuizResult', resultData);
     }
 
     const answersStr = encodeURIComponent(JSON.stringify(answers));
     const timesStr = encodeURIComponent(JSON.stringify(answerTimes));
+    let targetUrl = `/pages/result/result?type=${quizType}&majorOrder=${majorOrder}&answers=${answersStr}&answerTimes=${timesStr}`;
+    if (quizType === 'minor') {
+      targetUrl += `&mediumCode=${mediumCode}&minorCode=${minorCode}`;
+    }
     this.setData({ _submitted: true });
     this._clearProgress();
-    wx.redirectTo({
-      url: `/pages/result/result?type=${quizType}&majorOrder=${majorOrder}&answers=${answersStr}&answerTimes=${timesStr}`
-    });
+    wx.redirectTo({ url: targetUrl });
   },
 });

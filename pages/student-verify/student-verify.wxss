@@ -1,0 +1,82 @@
+.page-bg {
+  min-height: 100vh;
+  background-color: #F0F4F8;
+  padding: 32rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.tip {
+  font-size: 26rpx;
+  color: #6B7280;
+  line-height: 1.6;
+  padding: 0 8rpx;
+}
+
+.upload-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.upload-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.upload-box {
+  height: 360rpx;
+  background: #FFFFFF;
+  border: 2rpx dashed #9CA3AF;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.upload-box:active {
+  opacity: 0.7;
+}
+
+.upload-text {
+  font-size: 28rpx;
+  color: #9CA3AF;
+}
+
+.preview-box {
+  position: relative;
+  height: 360rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+}
+
+.preview-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64rpx;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.preview-text {
+  font-size: 24rpx;
+  color: #FFFFFF;
+}
+
+.submit-wrap {
+  margin-top: 24rpx;
+}

@@ -4,6 +4,7 @@ Page({
   data: {
     majorResult: null,
     mediumResult: null,
+    minorResult: null,
     dialogVisible: false,
     dialogType: '',
     cachedProgress: null,
@@ -14,7 +15,8 @@ Page({
   onShow() {
     const majorResult = wx.getStorageSync('majorQuizResult') || null;
     const mediumResult = wx.getStorageSync('mediumQuizResult') || null;
-    this.setData({ majorResult, mediumResult });
+    const minorResult = wx.getStorageSync('minorQuizResult') || null;
+    this.setData({ majorResult, mediumResult, minorResult });
 
     this._loadCachedProgress();
 
@@ -100,14 +102,18 @@ Page({
     if (dialogType === 'major') {
       wx.removeStorageSync('majorQuizResult');
       wx.removeStorageSync('mediumQuizResult');
-      if (cachedProgress && cachedProgress.quizType === 'medium') {
+      wx.removeStorageSync('minorQuizResult');
+      wx.removeStorageSync('minorQuizResults');
+      if (cachedProgress && (cachedProgress.quizType === 'medium' || cachedProgress.quizType === 'minor')) {
         this._clearCachedProgress();
       }
-      this.setData({ majorResult: null, mediumResult: null, cachedProgress: null });
+      this.setData({ majorResult: null, mediumResult: null, minorResult: null, cachedProgress: null });
       wx.navigateTo({ url: '/pages/quiz/quiz?type=major' });
     } else if (dialogType === 'medium') {
       wx.removeStorageSync('mediumQuizResult');
-      this.setData({ mediumResult: null });
+      wx.removeStorageSync('minorQuizResult');
+      wx.removeStorageSync('minorQuizResults');
+      this.setData({ mediumResult: null, minorResult: null });
       const majorResult = this.data.majorResult;
       if (!majorResult) {
         wx.showToast({ title: '请先完成大类问卷', icon: 'none' });
@@ -152,8 +158,14 @@ Page({
       });
       return;
     }
+    wx.navigateTo({ url: '/pages/minor-jobs/minor-jobs' });
+  },
+
+  viewMinorReport() {
+    const minorResult = this.data.minorResult;
+    if (!minorResult || !minorResult.bankKey) return;
     wx.navigateTo({
-      url: `/pages/minor-jobs/minor-jobs?mediumCategory=${encodeURIComponent(mediumResult.topCategory)}`
+      url: `/pages/result/result?from=storage&type=minor&bank=${minorResult.bankKey}`
     });
   }
 })
